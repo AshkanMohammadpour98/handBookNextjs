@@ -15,6 +15,7 @@
   - قسمت اول [عملیات-CRUD](عملیات-CRUD)
   - قسمت دوم [نصب-mongodb](نصب-mongodb)
   - قسمت سوم [mongodb-compass-دقیقا-چیه؟](mongodb-compass-دقیقا-چیه؟)
+  - قسمت چهارم [ایجاد-دیتابیس-جدید](ایجاد-دیتابیس-جدید)
 
 
 ---
@@ -284,13 +285,43 @@ url چیه؟ ما به یه آدرس اینترنتی میگیم url
 
 > # mongodb compass دقیقا چیه؟
 
-توی قسمت قبل mongoDb , mongoDbCampas رو نصب کردیم . گفتیم که mongoDbCampass یه GUI برای mongoDb  هست یه رابط کاربری گرافیکی برای مدیریت و کارکردن با پایگاه داده mongoDb هست میخوایم اینو بهتر جا بندازیم این رابط کاربر گرافیکی .
+توی قسمت قبل mongoDb , mongoDbCampass رو نصب کردیم . گفتیم که mongoDbCampass یه GUI برای mongoDb  هست یه رابط کاربری گرافیکی برای مدیریت و کارکردن با پایگاه داده mongoDb هست میخوایم اینو بهتر جا بندازیم این رابط کاربر گرافیکی .
 
 ما توی ویندوز میتونیم خیلی راحت بصورت گرافیکی کار کنیم مثلا میخوایم یه فولدر جدید درست کنیم کلیک راست میکنیم و  و NewFolder رو میزنیم یا اسمشو تغیر بدیم و درنهایت بخواییم حذفش میکنیم این کارو ما داریم بصورت گرافیکی انجام میدیم  هلا دقیقن این کارا رو میتونیم با cammand ها هم انجام بدیم با cmd  مثلا وارد cmd بشیم و دستور `mkdir milad`  الان یه فولدر درست میشه با اسم میلاد ما به این قسمت cmd میگیم shell - cammand prompt - terminal این اسم هارو به این محیط میگن توی جاهای مختلف اون جاهایی که ما دستور مینویسیم بجای اینکه رابط گرافیکی داشته باشیم .
 
 `
 ما درکل برای کار کردن با mongoDb یه محیط Mongo shell داریم منضور اینه که بصور camand خطی کد بنویسم مثل cmd ویندز و یه محیط MongoDb GUI
 `
-هلا برای کار کردن با databas mongoDb هم ما هم میتونیم camand وارد کنیم هم میتونیم از محیظ گرافیکی استفاده کنیم کار با محیط گرافیکی قطعا خیلی راحتر و ساده تره و این mongodbcampas یکی از ابزارهای گرافیکی برای کاردن با mongodb هست آیا این mongodbcampas تنها ابزار گرافیکی برای کارکردن با mongodb هست ؟ خیر ابرازهای دیگه ای هم هستن کافه سرچ کنیم  gui for mongodb که میشه رابطهای گرافیکی برای mongodb  که ما 7 تاشونو مثال میزنیم DronaHQ و MongoDB Compass و Robo 3T (formerly Robomongo) و Studio 3T (formerly MongoChef) و NoSQLBooster و HumongouS.io و NoSQL Manager 
+هلا برای کار کردن با databas mongoDb هم ما هم میتونیم camand وارد کنیم هم میتونیم از محیظ گرافیکی استفاده کنیم کار با محیط گرافیکی قطعا خیلی راحتر و ساده تره و این mongodbcampass یکی از ابزارهای گرافیکی برای کاردن با mongodb هست آیا این mongodbcampass تنها ابزار گرافیکی برای کارکردن با mongodb هست ؟ خیر ابرازهای دیگه ای هم هستن کافه سرچ کنیم  gui for mongodb که میشه رابطهای گرافیکی برای mongodb  که ما 7 تاشونو مثال میزنیم DronaHQ و MongoDB Compass و Robo 3T (formerly Robomongo) و Studio 3T (formerly MongoChef) و NoSQLBooster و HumongouS.io و NoSQL Manager 
 که ما فعلا با mongodbcampass کارمیکنیم و بعدن سراغ یکی از اینا میریم.
+---
+
+> # ایجاد دیتابیس جدید
+توی نرم افزار mongodbcampass میخوایم یه دیتابیس ایجاد کنیم و توی دیتابیسمون collection های مختلف ایجاد کنیم وقتی ما مجموعه اطلاعاتی که به هم مربوط مرتبط هستن رو یه جا ذخیره کنیم بهش میگن collection مثلا ما برای یوزر های وب سایتمون میخوایم یه collection یا مجموعه درست کنی دیتای تمامی یوزرهامونو اونجا قرار بدیم
+
+`
+نکته برای اسم گزاشتن برای collection  برای اخر اسمش یه s جمع بزاریم بهتره مثلا اگه بخوایم برای دسته بندی یوزر هامون درست کنیم اینطوری بنویسیم users 
+`
+
+<div align="center">
+  <img  src="./img/createNewDatabas-1.PNG">
+</div>
+<div align="center">
+  <img  src="./img/createNewDatabas-2.PNG">
+</div>
+<div align="center">
+  <img  src="./img/createnewDatabas-3.PNG">
+</div>
+<div align="center">
+  <img  src="./img/createNewDatabas-4.PNG">
+</div>
+<div align="center">
+  <img  src="./img/createNewDatabase-5.PNG">
+</div><div align="center">
+  <img  src="./img/createNewDatabase-6.PNG">
+</div><div align="center">
+  <img  src="./img/createNewDatabas-7.PNG">
+</div><div align="center">
+  <img  src="./img/createNewDatavas-8.PNG">
+</div>
 ---
