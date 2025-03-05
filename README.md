@@ -17,6 +17,7 @@
   - قسمت سوم [mongodb-compass-دقیقا-چیه؟](mongodb-compass-دقیقا-چیه؟)
   - قسمت چهارم [ایجاد-دیتابیس-جدید](ایجاد-دیتابیس-جدید)
   - قسمت پنجم [آشنایی-با-mongosh](آشنایی-با-mongosh)
+  - قسمت ششم [ایجاد-collection](ایجاد-collection)
 
 
 ---
@@ -355,3 +356,23 @@ Remember: In MongoDB, a database is not actually created until it gets content!
 ```
 use next1code
 ```
+---
+
+> # ایجاد collection
+
+میخوایم با comand یه collection درست کنیم اگه وب سایت هایhttps://www.w3schools.com/mongodb/mongodb_mongosh_create_collection.php   و https://www.tutorialspoint.com/mongodb/mongodb_create_collection.htm رو باز کنیم بخش mongodb که لینکشو قرار دادم وارد بخش  mongoDB Collection بشیم میکه که یک متد وجود داره به اسم createCollection()  که دوتا وردی میپذیره db.createCollection(name , options)  که name اجباری هست و option  اجباری نیست یعنی میتونیم قرار ندیم این name هم درواقع نام collection هست که میخوایم ایجاد کنیم 
+
+ما دوتا راه  دوتا روش داریم که یک collection بسازیم که روش اول اینه که از متد createCollection() استفاده کنیم روش دوم بیاییم از insert استفاده کنیم که تو قسمت بعدی توضیح میدیم .
+
+اول یه دیتابیس درست کنیم
+```
+use next1code
+```
+
+اگه وارد mongoshell بشیم تو mongocampass با دستور 
+```
+db.createCallection('users')
+```
+این db که نوشتیم اول داره اشاره میکنه به اون دیتابیس که ایجاد کردیم منضورش همون next1code هست
+که در پاسخ `{  ok:1  }`  یعنی باشه یک کالیکشن ایجاد شد.
+---
