@@ -19,6 +19,7 @@
   - قسمت پنجم [آشنایی-با-mongosh](آشنایی-با-mongosh)
   - قسمت ششم [ایجاد-collection](ایجاد-collection)
   - قسمت هفتم [متد-insertOne](متد-insertOne)
+  - قسمت هشتم [متد-insertMany](متد_inserMany)
 
 
 ---
@@ -399,5 +400,25 @@ db.users.insertOne(object)
 ```
 db.theachers.insertOne({ name : 'milad' , family : 'bahrami' , email : 'milad@yaho.com' , password : '123456' skill : ['react','nodejs']})
 ```
+
+---
+
+> # متد insertMany
+
+با متد insertOne میتونستیم  یه object  دیتا وارد کنیم به کالکشنمون با متد insertMany میتونیم یه ارایه متشکل از چندین ابجکت درست کنیم [{...} , {...} , {...}]
+
+```
+db.users.insertMany(
+  [
+   { name : 'nika' , family : 'shakarami' , email : 'nika@google.com' , password : '123456'},
+   { name : 'asgjar' , family : 'ahmadi' , email : 'asghar@yaho.com' , password : 'asdfasdfasdf'},
+   { name : 'sara' , family : 'abbasi' , email : 'sara@yaho.com' , password : 'se1452'}
+  ]
+)
+```
+`یه نکته: ما اگه بخوای داخل پرانتز این متد اینتر بزنیم و بخواییم داخلش اینتر بزنیم و ارایه و ابجکت ها رو بنویسم کد اجرا میشه به محظ اینتر زدن ولی اگه کلید Sheft و سپس Enter رو بزنیم میتونیم فاصله از پایین هم ایجاد کنیم مثل تصویر`
+معنی کلمه many میشه (چندین,بسیاری,چندتا)
+
+` پس با insertOne میتونستیم یک داکیومنت درج کنیم اضافه کنیم و با insertMany میتونیم چندین تا اضافه کنیم `
 
 ---
