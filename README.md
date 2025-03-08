@@ -22,6 +22,8 @@
   - قسمت هشتم [متد-insertMany](متد_inserMany)
   - قسمت نهم [لطفا-داکیومنت-بخون](لطفا-داکیومنت-بخون)
   - قسمت دهم [متد-find-و-findOne](متد-find-و-findOne)
+  - قسمت یازدهم [متد-updateOne](متد-updateOne)
+  - قسمت دوازدهم [متد-updateMany](متد-updateMany)
 
 
 ---
@@ -504,5 +506,83 @@ db.users.findOne({name : 'milad' } , {name : 1 , lastName : 1 , _id : 0})
 ```
 { name : 'milad' , lastName: 'bahrami'}
 ```
+
+---
+
+> # متد updateOne
+
+ما میتونیم داکیومنت هامون رو مقادیرشو update بروزرسانی کنیم 
+
+```
+[
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'ali' , lastName: 'karimi' , email : 'ali@yahoo.com' , password : '12345678'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'nika' , lastName: 'shakarami' , email : 'nika@eail.com' , password : '1ddw45678'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'asghar' , lastName: 'ahmadi' , email : 'asghar@yahoo.com' , password : 'p456dhhuy'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'mamad' , lastName: 'tarj' , email : 'mamad@yahoo.com' , password : '123ds6fr8'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'milad' , lastName: 'bahrami' , email : 'milad@yahoo.com' , password : 'wf6718sad'},
+]
+```
+این داکیومنت ها که داخل کالکشن users هستن میتونیم مقادیری که دارن رو بروزرسانی کنیم مثلا name  یا ...  شون رو یه مثال مثلا شما تو یه سایت ثبت نام کردین و میخوایین password تون رو تغیر بدین خب این پسورد شما تو دیتابیس تو یه جایی ذخیره میشه و هالا درواقع شما دارین پسورد تون رو ابدیت میکنین تغیرش میدید .
+
+میتونیم از دو متد updateOne() و updateMany() استفاده کنیم . اگه بخوایم یکی از این داکیونت هارو بروز رسانی کنیم از updateOne استفاده میکنیم اگه بخواییم بیش از یک داکیومنت رو ابدیت کنیم  بصورت همزمان از updateMany استفاده میکنیم مثلا بگیم همه داکیومنت هامون پسوردشون بشه 12345678 اینطوری داریم بیش از یک داکیومنت رو ابدیت کنیم پس در اینصورت از updateMany استفاده میشه .
+
+ ما الان میخوایم سومی که name : 'asghar' هست رو password : 'p456dhhuy' که هست رو  تغیر بدیم ابدیت کنیم 
+ ```
+db.users.updateOne(
+  {email : 'asghar@yahoo.com'},
+  {$set : {password : '7878980011'}}
+)
+```
+که چیزی که بهمون میگه تو mongoshell :
+```
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+```
+یعنی  matchedCount: 1 میگه این چیزی که من دنبالش گشتم با چند تا داکیومنت ها match شده با چند تا مطابقط داره فقط یکی بود دیگه که با این ایمیل بود که ما نوشتیم بعد نوشته modifiedCount :1 یعنی تغیر داده شده داره داکیومنت هایی که تغیر داده شده رو نوشته یک 
+
+
+میتونیم از یک داکیومنت چند فیلد دیگه چند کلید دیگه رو هم باهم تغیر بدیم :
+
+
+ ```
+db.users.updateOne(
+  {email : 'asghar@yahoo.com'},
+  {$set : {lastName : 'bahrami' , password : '7878980asq'}}
+)
+```
+---
+
+> # متد updateMany
+
+متد opdateOne همونطور که از اسمش مشخصه فقط برای ابدیت کردن یک داکیومنت میتونیم ازش استفاده کنیم  اما اگه بخوایم بیش از یک داکیومنت رو ابدیت کنیم از متد updateMany استفاده میکنیم مثلا همه اونایی که جنسیت شون اقا هست رو پسوردشون یا چیزی شون رو تغیری بدم یا مثلا همه کاربرانی که سنشون از یه عدد موردنظری بزرگتره یا کوچکتره است رو یه جایی شو یه ابدیتی کنم توی این موارد توی این کیس ها ما از updateMany استفاده میکنیم الان ما یه داکیومنت دیگه هم اضافه میکنیم که اونم lastName bahrami باشه 
+```
+db.users.insertOne{{name: 'mehrdad' , lastName : 'bahrami' , email : 'mehrdad@yahoo.com' , password : 'asdfasdf111'}}
+```
+هلا کالکشن users اینطوری شده 6تا کالکشن
+```
+[
+  {_id : ObjectId("62c350qc07d768a33fdfe9b0") , name : 'ali' , lastName: 'karimi' , email : 'ali@yahoo.com' , password : '12345678'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'nika' , lastName: 'shakarami' , email : 'nika@eail.com' , password : '1ddw45678'},
+  {_id : ObjectId("62c350dc07d768a33ddfe9b0") , name : 'asghar' , lastName: 'ahmadi' , email : 'asghar@yahoo.com' , password : 'p456dhhuy'},
+  {_id : ObjectId("62c350dc07d768a33wdfe9b0") , name : 'mamad' , lastName: 'tarj' , email : 'mamad@yahoo.com' , password : '123ds6fr8'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'milad' , lastName: 'bahrami' , email : 'milad@yahoo.com' , password : 'wf6718sad'},
+  {_id : ObjectId("62c350dc07d768a33fdfe7b0") , name : 'mehrdad' , lastName: 'bahrami' , email : 'mehrdad@yahoo.com' , password : 'asdfasdf111'}
+]
+```
+
+الان کاری که میخواییم انجام بدیم اینه که اونایی که  'lastName : 'bahrami دارن رو password شون رو تغیر بدیم باهم 
+
+```
+db.users.updateMany(
+  {lastName : 'bahrami'},
+  {$set : {password : '40009'}}
+)
+```
+الان هر دوتا اونایی که 'lastName : 'bahrami'  بودن دوتا شون پسوردشون تغیر کرده.
 
 ---
