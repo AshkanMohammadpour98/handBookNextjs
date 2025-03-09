@@ -26,6 +26,7 @@
   - قسمت دوازدهم [متد-updateMany](متد-updateMany)
   - قسمت سیزدهم [deleteOne-و-deleteMany](deleteOne-و-deleteMany)
   - قسمت چهاردهم [comparison-operators](comparison-operators)
+  - قسمت پانزدهم [اپراتور-in$-و-nin$](اپراتور-in$-و-nin$)
 
 
 ---
@@ -641,7 +642,7 @@ db.users.deleteMany({ lastName : 'bahrami'})
   email: "milad@yahoo.com",
   password: "12345678m",
   age : '24',
-  skiils: ["html","css","js","react","nextJs"]
+  skills: ["html","css","js","react","nextJs"]
 },
   {
   _id: {"$oid": "67cd90fffdd5c8185ddd2e9f"},
@@ -650,7 +651,7 @@ db.users.deleteMany({ lastName : 'bahrami'})
   email: "ali@yahoo.com",
   password: "12345678a",
   age : '24',
-  skiils: ["html","css","js"]
+  skills: ["html","css","js"]
 },
   {
   _id: {"$oid": "67cd9132fdd5c8185ddd2ea0"},
@@ -668,7 +669,7 @@ db.users.deleteMany({ lastName : 'bahrami'})
   email: "asghar@yahoo.com",
   password: "12345678as",
   age : '19',
-  skiils: [ "html","css"]
+  skills: [ "html","css"]
 },
   {
   _id: {"$oid": "67cd920ffdd5c8185ddd2ea2"},
@@ -677,7 +678,7 @@ db.users.deleteMany({ lastName : 'bahrami'})
   email: "mahsa@yahoo.com",
   password: "12345678ma",
   age : '40',
-  skiils: ["html","css"]
+  skills: ["html","css"]
 },
   {
   _id: {"$oid": "67cd923efdd5c8185ddd2ea3"
@@ -687,7 +688,7 @@ db.users.deleteMany({ lastName : 'bahrami'})
   email: "yasin@yahoo.com",
   password: "asdfasdfaYas",
   age : '35',
-  skiils: ["html","css","js","react","nextJs","nodeJs"]
+  skills: ["html","css","js","react","nextJs","nodeJs"]
 },
   {
   _id: {"$oid": "67cd9268fdd5c8185ddd2ea4"
@@ -697,7 +698,7 @@ db.users.deleteMany({ lastName : 'bahrami'})
   email: "milad@email.com",
   age : '39',
   password: "1fgf567sh",
-  skiils: ["html","css","js","react","nextJs"]
+  skills: ["html","css","js","react","nextJs"]
 }
   
 ]
@@ -716,7 +717,7 @@ db.users.find({email : 'milad@yahoo.com'})
   email: 'milad@yahoo.com',
   password: '12345678m',
   age : '24',
-  skiils: [
+  skills: [
     'html',
     'css',
     'js',
@@ -755,7 +756,7 @@ db.users.find({age : {$gt : 28}})
   famile: 'ahmadi',
   email: 'mahsa@yahoo.com',
   password: '12345678ma',
-  skiils: [
+  skills: [
     'html',
     'css'
   ],
@@ -767,7 +768,7 @@ db.users.find({age : {$gt : 28}})
   famile: 'shahkarami',
   email: 'yasin@yahoo.com',
   password: 'asdfasdfaYas',
-  skiils: [
+  skills: [
     'html',
     'css',
     'js',
@@ -783,7 +784,7 @@ db.users.find({age : {$gt : 28}})
   famile: 'bahrami',
   email: 'milad@email.com',
   password: '1fgf567sh',
-  skiils: [
+  skills: [
     'html',
     'css',
     'js',
@@ -811,7 +812,7 @@ db.users.find({age : {lt : 28}})
   famile: 'bahrami',
   email: 'milad@yahoo.com',
   password: '12345678m',
-  skiils: [
+  skills: [
     'html',
     'css',
     'js',
@@ -826,7 +827,7 @@ db.users.find({age : {lt : 28}})
   famile: 'karimi',
   email: 'ali@yahoo.com',
   password: '12345678a',
-  skiils: [
+  skills: [
     'html',
     'css',
     'js'
@@ -839,7 +840,7 @@ db.users.find({age : {lt : 28}})
   famile: 'shahkarami',
   email: 'nika@yahoo.com',
   password: '12345678n',
-  skiils: [
+  skills: [
     'html',
     'css',
     'js',
@@ -855,7 +856,7 @@ db.users.find({age : {lt : 28}})
   famile: 'ahmadi',
   email: 'asghar@yahoo.com',
   password: '12345678as',
-  skiils: [
+  skills: [
     'html',
     'css'
   ],
@@ -871,3 +872,97 @@ db.users.find({age : {lt : 28}})
 db.users.find({age : {lte : 28}})
 ```
 این به این معنیه که کاربرانی که برابر 28سال  هستن و کوچکتر هستن
+
+---
+
+> # اپراتور in$ و nin$
+
+البته توی w3schols فقط اپراتور $in رو گفته اما یه دونه اپراتور $nin رو داریم که اونو نگفته که اون رو نگفته و علت اینکه گفتیم از چند تا منبع استفاده کنیم همینه ممکنه یکی بیشتر و یکی کمتر یا یکی چیزی رو کلا نگفته باشه . اما تو منبع دیگه که وب سایت mongodbtutorial هست اپراتور $nin رو گفته 
+
+
+https://www.w3schools.com/mongodb/mongodb_query_operators.php
+
+https://www.mongodbtutorial.org/mongodb-crud/mongodb-ne/
+
+این اپراتور $in  برایش شامل شدن و $nin برای شامل نشدن هست که in (incluid) , nin (not incluid) اگه دقت کرده باشین ما تو دیتابیسمون کالکشن users ما هرکدوم از داکیومنت هامون یه اپراتور  به اسم skills داشتن که یه ارایه بودن که یک ارایه هست که هر کدوم از اعضای این ارایه یه رشته هستن که دارن مهارت اون uer هست.
+
+
+هالا ما میخوایم تو این ارایه skills یه سرچ انجام بدیم بر اساس مثلا همه کاربرایی رو پیداکن که توی ارایه sliks شون react وجود داره 
+```
+db.users.find({skills : {$in : ['react']}})
+```
+الان این به این معنا هست  که برو تو collection users و پیداکن find کن اونایی رو که توی پراپرتی skills شون رشته 'react' وجود داره  این $in  به معنای incluid هست که میشه شامل شدن که تو خروجی اینا رو میده
+
+```
+[
+{
+  _id: ObjectId('67cd90cefdd5c8185ddd2e9e'),
+  name: 'milad',
+  famile: 'bahrami',
+  email: 'milad@yahoo.com',
+  password: '12345678m',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  age: '24'
+},
+{
+  _id: ObjectId('67cd9132fdd5c8185ddd2ea0'),
+  name: 'nika',
+  famile: 'shahkarami',
+  email: 'nika@yahoo.com',
+  password: '12345678n',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs',
+    'nodeJs'
+  ],
+  age: '21'
+},
+{
+  _id: ObjectId('67cd923efdd5c8185ddd2ea3'),
+  name: 'yasin',
+  famile: 'shahkarami',
+  email: 'yasin@yahoo.com',
+  password: 'asdfasdfaYas',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs',
+    'nodeJs'
+  ],
+  age: '35'
+},
+{
+  _id: ObjectId('67cd9268fdd5c8185ddd2ea4'),
+  name: 'shadman',
+  famile: 'bahrami',
+  email: 'milad@email.com',
+  password: '1fgf567sh',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  age: '39'
+}
+]
+```
+
+هلا میتونیم بگیم اونایی که رشته react تو skills نیستن :
+```
+db.users.find({skills : {#nin : ['react']}})
+```
+
+---
