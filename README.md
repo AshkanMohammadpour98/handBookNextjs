@@ -25,6 +25,7 @@
   - قسمت یازدهم [متد-updateOne](متد-updateOne)
   - قسمت دوازدهم [متد-updateMany](متد-updateMany)
   - قسمت سیزدهم [deleteOne-و-deleteMany](deleteOne-و-deleteMany)
+  - قسمت چهاردهم [comparison-operators](comparison-operators)
 
 
 ---
@@ -620,3 +621,253 @@ db.users.deleteMany({ lastName : 'bahrami'})
   deletedCount : 2
 }
 ```
+> # comparison operators
+
+تو این قسمت از دوتا منبع https://www.w3schools.com/mongodb/mongodb_query_operators.php بخش MongoDB Query Operators 
+
+
+و سایت https://www.mongodbtutorial.org/ بخش Comparison Query Operators که برای هرکدوم یه مثال زده
+
+
+فرض کنین که ما تو دیتابیسمون یه کالکشن users داریم که 7 تا داکیومنت داخلش هستن:
+
+```
+[
+  
+  {
+  _id: {"$oid": "67cd90cefdd5c8185ddd2e9e"},
+  name: "milad",
+  famile: "bahrami",
+  email: "milad@yahoo.com",
+  password: "12345678m",
+  age : '24',
+  skiils: ["html","css","js","react","nextJs"]
+},
+  {
+  _id: {"$oid": "67cd90fffdd5c8185ddd2e9f"},
+  name: "ali",
+  famile: "karimi",
+  email: "ali@yahoo.com",
+  password: "12345678a",
+  age : '24',
+  skiils: ["html","css","js"]
+},
+  {
+  _id: {"$oid": "67cd9132fdd5c8185ddd2ea0"},
+  name: "nika",
+  famile: "shahkarami",
+  email: "nika@yahoo.com",
+  password: "12345678n",
+  age : '21',
+  skiils: ["html","css","js","react","nextJs","nodeJs"]
+},
+  {
+  _id: {"$oid": "67cd9170fdd5c8185ddd2ea1"},
+  name: "asghar",
+  famile: "ahmadi",
+  email: "asghar@yahoo.com",
+  password: "12345678as",
+  age : '19',
+  skiils: [ "html","css"]
+},
+  {
+  _id: {"$oid": "67cd920ffdd5c8185ddd2ea2"},
+  name: "mahsa",
+  famile: "ahmadi",
+  email: "mahsa@yahoo.com",
+  password: "12345678ma",
+  age : '40',
+  skiils: ["html","css"]
+},
+  {
+  _id: {"$oid": "67cd923efdd5c8185ddd2ea3"
+  },
+  name: "yasin",
+  famile: "shahkarami",
+  email: "yasin@yahoo.com",
+  password: "asdfasdfaYas",
+  age : '35',
+  skiils: ["html","css","js","react","nextJs","nodeJs"]
+},
+  {
+  _id: {"$oid": "67cd9268fdd5c8185ddd2ea4"
+  },
+  name: "shadman",
+  famile: "bahrami",
+  email: "milad@email.com",
+  age : '39',
+  password: "1fgf567sh",
+  skiils: ["html","css","js","react","nextJs"]
+}
+  
+]
+```
+
+خب ما بیاییم از متد find استفاده کنیم که یادگرفته بودیم:
+```
+db.users.find({email : 'milad@yahoo.com'})
+```
+و تو خروجی که mongoshell میده دقیقن میگرده و همونو پیدا میکنه میده بهمون.
+```
+{
+  _id: ObjectId('67cd90cefdd5c8185ddd2e9e'),
+  name: 'milad',
+  famile: 'bahrami',
+  email: 'milad@yahoo.com',
+  password: '12345678m',
+  age : '24',
+  skiils: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ]
+}
+```
+
+
+```
+db.users.find({email : {$eq : 'milad@yahoo.com'}})
+```
+این دقیقن معادل همون کد بالا هست که نوشتیم `db.users.find({email : 'milad@yahoo.com'})`یعنی اینجا استفاده از این `eq` واقعا کار بیخودی هست وقتی میتونیم ساده تر بنویسیم  این هم تو خروجی دقیقن مثل بالا ابجکتی که پیدا میکنه رو میده .
+
+
+یه اپراتور دیگه هم داریم به اسم مخخفف  `$ne: Values are not equal` که به معنای نابرابر است مثلا میتونیم بگیم همه کاربرایی رو برام پیداکن بغیر از اونی که 'email : 'milad@yahoo.com است 
+```
+db.users.find({email : {$ne : 'milad@yahoo.com'}})
+
+```
+این الان به این معنی هست که بهش گفتیم برو تو دیتابیس توی کالکشن users و find کن پیداکن بر اساس email داریم فیلتر رو انجام میدیم و گفتیم اونایی که  ایمیلشون نابرابر هستن با milad@yahoo.com یعنی ایملش هرچیزی باشه بغیر از این اونا رو پیداکن  که ما 7 تا داکیومنت داشتیم اون 6 تای دیگه رو میده تو خروجی که ایملاشون این نیستن 
+
+
+هلا میخواییم براساس سنشون سرچ انجام بدیم از `gt` استفاده میکنیم یعنی بزرگتر از . بگیم همه اونایی که سنشون بزرگتر 28 هست رو پیداکن 
+```
+db.users.find({age : {$gt : 28}})
+```
+این به این معنی هست که میگیم برو تو کالکشن users پیداکن اونایی که سنشون از 28 بزرگتره 
+که تو خروجی سه تا شونو میده که سنشون از 28 بزرگتره 
+```
+[
+{
+  _id: ObjectId('67cd920ffdd5c8185ddd2ea2'),
+  name: 'mahsa',
+  famile: 'ahmadi',
+  email: 'mahsa@yahoo.com',
+  password: '12345678ma',
+  skiils: [
+    'html',
+    'css'
+  ],
+  age: '40'
+},
+{
+  _id: ObjectId('67cd923efdd5c8185ddd2ea3'),
+  name: 'yasin',
+  famile: 'shahkarami',
+  email: 'yasin@yahoo.com',
+  password: 'asdfasdfaYas',
+  skiils: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs',
+    'nodeJs'
+  ],
+  age: '35'
+},
+{
+  _id: ObjectId('67cd9268fdd5c8185ddd2ea4'),
+  name: 'shadman',
+  famile: 'bahrami',
+  email: 'milad@email.com',
+  password: '1fgf567sh',
+  skiils: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  age: '39'
+}
+
+]
+
+```
+
+هلا میخوایم بگیم اونایی که سنشون کوچکتر از 28 سال هست رو پیدا کن :
+```
+db.users.find({age : {lt : 28}})
+```
+که چهار تا ابجکت همون میده که سنشون از 28 کوچکتره
+```
+[
+
+{
+  _id: ObjectId('67cd90cefdd5c8185ddd2e9e'),
+  name: 'milad',
+  famile: 'bahrami',
+  email: 'milad@yahoo.com',
+  password: '12345678m',
+  skiils: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  age: '24'
+},
+{
+  _id: ObjectId('67cd90fffdd5c8185ddd2e9f'),
+  name: 'ali',
+  famile: 'karimi',
+  email: 'ali@yahoo.com',
+  password: '12345678a',
+  skiils: [
+    'html',
+    'css',
+    'js'
+  ],
+  age: '24'
+},
+{
+  _id: ObjectId('67cd9132fdd5c8185ddd2ea0'),
+  name: 'nika',
+  famile: 'shahkarami',
+  email: 'nika@yahoo.com',
+  password: '12345678n',
+  skiils: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs',
+    'nodeJs'
+  ],
+  age: '21'
+},
+{
+  _id: ObjectId('67cd9170fdd5c8185ddd2ea1'),
+  name: 'asghar',
+  famile: 'ahmadi',
+  email: 'asghar@yahoo.com',
+  password: '12345678as',
+  skiils: [
+    'html',
+    'css'
+  ],
+  age: '19'
+}
+
+]
+```
+
+هلا میخواییم بگیم کوچکتر و مساوی 28 سال 
+
+```
+db.users.find({age : {lte : 28}})
+```
+این به این معنیه که کاربرانی که برابر 28سال  هستن و کوچکتر هستن
