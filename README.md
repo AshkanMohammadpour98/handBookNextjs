@@ -24,6 +24,7 @@
   - قسمت دهم [متد-find-و-findOne](متد-find-و-findOne)
   - قسمت یازدهم [متد-updateOne](متد-updateOne)
   - قسمت دوازدهم [متد-updateMany](متد-updateMany)
+  - قسمت سیزدهم [deleteOne-و-deleteMany](deleteOne-و-deleteMany)
 
 
 ---
@@ -586,3 +587,36 @@ db.users.updateMany(
 الان هر دوتا اونایی که 'lastName : 'bahrami'  بودن دوتا شون پسوردشون تغیر کرده.
 
 ---
+
+> #  deleteOne و deleteMany
+
+فرض کنین که ما تو کالکشن users مون چند تا کالکشن داریم و میخوایم اونی که password : '78784555' رو حذف کنیم میتونیم با استفاده از دوتا متد deleteOne , dleteMany این کارو انجام بدیم که dleteOne برای حذف کردن یک داکیومنت استفاده میشه و deleteMany برای حذف بیش از یک داکیومنت استفاده میشه .
+
+
+این رو کالکشن users درنظر بگیرین
+```
+[
+  {_id : ObjectId("62c350qc07d768a33fdfe9b0") , name : 'ali' , lastName: 'karimi' , email : 'ali@yahoo.com' , password : '12345678'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'nika' , lastName: 'shakarami' , email : 'nika@eail.com' , password : '1ddw45678'},
+  {_id : ObjectId("62c350dc07d768a33ddfe9b0") , name : 'asghar' , lastName: 'ahmadi' , email : 'asghar@yahoo.com' , password : 'p456dhhuy'},
+  {_id : ObjectId("62c350dc07d768a33wdfe9b0") , name : 'mamad' , lastName: 'tarj' , email : 'mamad@yahoo.com' , password : '123ds6fr8'},
+  {_id : ObjectId("62c350dc07d768a33fdfe9b0") , name : 'milad' , lastName: 'bahrami' , email : 'milad@yahoo.com' , password : 'wf6718sad'},
+  {_id : ObjectId("62c350dc07d768a33fdfe7b0") , name : 'mehrdad' , lastName: 'bahrami' , email : 'mehrdad@yahoo.com' , password : 'asdfasdf111'}
+]
+```
+هلا میخوایم یکی  رو حذف کنیم :
+```
+db.users.deleteOne({ _id : 'ObjectId("62c350qc07d768a33fdfe9b0"'})
+```
+متد dleteOne  میره میگرده از اولین برسه به هرکدوم مثلا فرض کنین ما دوتا یوزر با lastName : 'bahrami' داریم اگه از متد dleteOn استفاده کنیم میره میگرده به اولین که رسید همون رو حذف میکنه و کارش تموم میشه 
+
+```
+db.users.deleteMany({ lastName : 'bahrami'})
+```
+الان چیزی که برمیگردونه داخل mongosell میگه دوتا حذف داشتیم
+```
+{
+  acknowledged : true,
+  deletedCount : 2
+}
+```
