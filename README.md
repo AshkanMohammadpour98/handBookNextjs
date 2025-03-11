@@ -27,6 +27,7 @@
   - قسمت سیزدهم [deleteOne-و-deleteMany](deleteOne-و-deleteMany)
   - قسمت چهاردهم [comparison-operators](comparison-operators)
   - قسمت پانزدهم [اپراتور-in$-و-nin$](اپراتور-in$-و-nin$)
+  - قسمت شانزدهم [اپراتور-and$](اپراتور-and$)
 
 
 ---
@@ -627,7 +628,42 @@ db.users.deleteMany({ lastName : 'bahrami'})
 تو این قسمت از دوتا منبع https://www.w3schools.com/mongodb/mongodb_query_operators.php بخش MongoDB Query Operators 
 
 
-و سایت https://www.mongodbtutorial.org/ بخش Comparison Query Operators که برای هرکدوم یه مثال زده
+و سایت https://www.mongodbtutorial.org/ بخش Comparison Query Operators که برای هرکدوم یه مثال زده 
+در کل قراره با این سه دسته بندی کامند های mongoshell آشنا بشیم و کاربرد ها شو برسی کنیم
+
+
+
+Comparison
+The following operators can be used in queries to compare values:
+
+- $eq: Values are equal
+- $ne: Values are not equal
+- $gt: Value is greater than another value
+- $gte: Value is greater than or equal to another value
+- $lt: Value is less than another value
+- $lte: Value is less than or equal to another value
+- $in: Value is matched within an array
+----------
+
+
+
+Logical
+The following operators can logically compare multiple queries.
+
+- $and: Returns documents where both queries match
+- $or: Returns documents where either query matches
+- $nor: Returns documents where both queries fail to match
+- $not: Returns documents where the query does not match
+---------
+
+
+Evaluation
+The following operators assist in evaluating documents.
+
+- $regex: Allows the use of regular expressions when evaluating field values
+- $text: Performs a text search
+- $where: Uses a JavaScript expression to match documents
+--------
 
 
 فرض کنین که ما تو دیتابیسمون یه کالکشن users داریم که 7 تا داکیومنت داخلش هستن:
@@ -962,7 +998,282 @@ db.users.find({skills : {$in : ['react']}})
 
 هلا میتونیم بگیم اونایی که رشته react تو skills نیستن :
 ```
-db.users.find({skills : {#nin : ['react']}})
+db.users.find({skills : {$nin : ['react']}})
 ```
 
 ---
+> # اپراتور-and$
+
+
+Comparison
+The following operators can be used in queries to compare values:
+
+- $eq: Values are equal
+- $ne: Values are not equal
+- $gt: Value is greater than another value
+- $gte: Value is greater than or equal to another value
+- $lt: Value is less than another value
+- $lte: Value is less than or equal to another value
+- $in: Value is matched within an array
+----------
+
+
+
+Logical
+The following operators can logically compare multiple queries.
+
+- $and: Returns documents where both queries match
+- $or: Returns documents where either query matches
+- $nor: Returns documents where both queries fail to match
+- $not: Returns documents where the query does not match
+---------
+
+
+Evaluation
+The following operators assist in evaluating documents.
+
+- $regex: Allows the use of regular expressions when evaluating field values
+- $text: Performs a text search
+- $where: Uses a JavaScript expression to match documents
+--------
+
+
+
+
+تو این قسمت دیتابیسمون رو ابدیت کردیم یه پراپرتی جدید به همه یوزر ها جنسیت (gender) اضافه کردیم 
+```
+[
+
+{
+  _id: {
+    "$oid": "67cd90cefdd5c8185ddd2e9e"
+  },
+  name: "milad",
+  famile: "bahrami",
+  email: "milad@yahoo.com",
+  password: "12345678m",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd90fffdd5c8185ddd2e9f"
+  },
+  name: "ali",
+  famile: "karimi",
+  email: "ali@yahoo.com",
+  password: "12345678a",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd9132fdd5c8185ddd2ea0"
+  },
+  name: "nika",
+  famile: "shahkarami",
+  email: "nika@yahoo.com",
+  password: "12345678n",
+  age: "21",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  gender: "female"
+},
+{
+  "_id": {
+    "$oid": "67cd9170fdd5c8185ddd2ea1"
+  },
+  "name": "asghar",
+  "famile": "ahmadi",
+  "email": "asghar@yahoo.com",
+  "password": "12345678as",
+  "age": "19",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd920ffdd5c8185ddd2ea2"
+  },
+  "name": "mahsa",
+  "famile": "ahmadi",
+  "email": "mahsa@yahoo.com",
+  "password": "12345678ma",
+  "age": "40",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "female"
+},
+{
+  "_id": {
+    "$oid": "67cd923efdd5c8185ddd2ea3"
+  },
+  "name": "yasin",
+  "famile": "shahkarami",
+  "email": "yasin@yahoo.com",
+  "password": "asdfasdfaYas",
+  "age": "35",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd9268fdd5c8185ddd2ea4"
+  },
+  "name": "shadman",
+  "famile": "bahrami",
+  "email": "milad@email.com",
+  "password": "1fgf567sh",
+  "age": "39",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  "gender": "male"
+}
+
+]
+```
+میخوایم دنبال کاربرهایی بگردیم که دوتا شرطو همزمان داشته باشن همجنسیتشون اقا باشه هم سنشون بالاتر از 19 باشه 
+```
+db.users.find({
+  $and : [ {age : { $gt : 19 }} , {gender : 'male'} ]
+})
+```
+
+کاری که کردیم اینه که کالکشن users رو انتخاب کردیم و روش find زدیم که یه object میگیره  به عنوان پراپرتی $and رو دادیم که اون هم چون میخوایم بیش از یک شرط رو بزاریم array میگیره به عنوان مثدارش که هر کدوم از این ارایه ها هم object هستن 
+```
+{
+  _id: ObjectId('67cd90cefdd5c8185ddd2e9e'),
+  name: 'milad',
+  famile: 'bahrami',
+  email: 'milad@yahoo.com',
+  password: '12345678m',
+  age: '24',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  gender: 'male'
+},
+{
+  _id: ObjectId('67cd90fffdd5c8185ddd2e9f'),
+  name: 'ali',
+  famile: 'karimi',
+  email: 'ali@yahoo.com',
+  password: '12345678a',
+  age: '24',
+  skills: [
+    'html',
+    'css',
+    'js'
+  ],
+  gender: 'male'
+},
+{
+  _id: ObjectId('67cd923efdd5c8185ddd2ea3'),
+  name: 'yasin',
+  famile: 'shahkarami',
+  email: 'yasin@yahoo.com',
+  password: 'asdfasdfaYas',
+  age: '35',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs',
+    'nodeJs'
+  ],
+  gender: 'male'
+},
+{
+  _id: ObjectId('67cd9268fdd5c8185ddd2ea4'),
+  name: 'shadman',
+  famile: 'bahrami',
+  email: 'milad@email.com',
+  password: '1fgf567sh',
+  age: '39',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  gender: 'male'
+}
+```
+که تو خوجی طبق همون شرطی که گزاشتیم اونایی که سنشون از 19 بیشتره و مرد هستن رو داده .
+
+
+میتونیم بگیم شرط یک خانوم باشه و سنش برابر یا بزرگتر از مثلا 24 باشه :
+```
+db.users.find({
+  $and : [ {gender : 'female'} , { age : {$gte : 24} } ]
+})
+```
+```
+[
+  {
+  _id: ObjectId('67cd920ffdd5c8185ddd2ea2'),
+  name: 'mahsa',
+  famile: 'ahmadi',
+  email: 'mahsa@yahoo.com',
+  password: '12345678ma',
+  age: '40',
+  skills: [
+    'html',
+    'css'
+  ],
+  gender: 'female'
+}
+]
+```
+
+تو خروجی چون ما سن مساوی با 24 که خانوم باشه نداریم و گفتیم مساوی یا برابر 24 و خانوم باشه یکی رو داشتیم که سنش 40 بود رو تو خروجی داد.
+
+
+هلا میخوایم یه مثال دیگه بزنیم که سه تا شرط داشته باشه یکی اقا باشه دوم تو مهارت هاش react بلد باشه و سوم اینکه سنش بزرگتر از 24 باشه ما برای اینکه داخل محیط ترمینال mongosh بتونیم اینتر بزنیم موقع comand نویسی بتونیم یه سسطر بیاییم پایین دکمه shift و دکمه جهت نمایی پایین رو همزمان باهم فشار میدیم گفتم یه یاد اوری باشه :
+```
+db.users.find({
+  $and : [ {gender : 'male'} , {age : { $gt : '24' }} , {skills : {$in : ['react']}} ]
+})
+```
+هرکدوم از شروط رو باید داخل یه object بزاریم دیگه  اون شرط اخری که مربون به slikks هست رو که نوشتیم {skills : {$in : ['react']} هالا چرا این ['react'] گزاشتیم ؟ چون ارایه هست دیگه مقدار های داخل پراپرتی skills داخل ارایه هستن دیگه .
