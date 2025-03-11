@@ -28,6 +28,7 @@
   - قسمت چهاردهم [comparison-operators](comparison-operators)
   - قسمت پانزدهم [اپراتور-in$-و-nin$](اپراتور-in$-و-nin$)
   - قسمت شانزدهم [اپراتور-and$](اپراتور-and$)
+  - قسمت هفدهم [اپراتور-$or](اپراتور-#or)
 
 
 ---
@@ -1270,6 +1271,9 @@ db.users.find({
 تو خروجی چون ما سن مساوی با 24 که خانوم باشه نداریم و گفتیم مساوی یا برابر 24 و خانوم باشه یکی رو داشتیم که سنش 40 بود رو تو خروجی داد.
 
 
+
+
+
 هلا میخوایم یه مثال دیگه بزنیم که سه تا شرط داشته باشه یکی اقا باشه دوم تو مهارت هاش react بلد باشه و سوم اینکه سنش بزرگتر از 24 باشه ما برای اینکه داخل محیط ترمینال mongosh بتونیم اینتر بزنیم موقع comand نویسی بتونیم یه سسطر بیاییم پایین دکمه shift و دکمه جهت نمایی پایین رو همزمان باهم فشار میدیم گفتم یه یاد اوری باشه :
 ```
 db.users.find({
@@ -1277,3 +1281,102 @@ db.users.find({
 })
 ```
 هرکدوم از شروط رو باید داخل یه object بزاریم دیگه  اون شرط اخری که مربون به slikks هست رو که نوشتیم {skills : {$in : ['react']} هالا چرا این ['react'] گزاشتیم ؟ چون ارایه هست دیگه مقدار های داخل پراپرتی skills داخل ارایه هستن دیگه .
+
+
+> # اپراتور $or
+
+توی قسمت قبل اپراتور $and رو برسی کردیم و اینطوری بود که مثلا اگه هرچند شرط که براش میزاشتیم همه باید وجود داشته باشه تا مثلا اون کاربر رو پیدا کنه  `اما اپراتور $or فقط کافیه یکی از شروط وجود داشته باشه `
+
+
+میخوایم کاربرایی رو پیدا کنیم که یا جنسیتشون اقا باشه یا سنشون از 20 بزرگتر باشه  البته میتونه هم اقا باشه هم سنتشم از 20 بزرگتر باشه:
+```
+db.users.find({
+$or : [ 
+	{age : {$gt : 20}} ,
+  {gender : 'male'}
+]
+})
+```
+که تو خروجی 5تا یوزر با این شرایط رو میده که یا جفت این شرطا رو داشته باشه یا کافیه یدونه شون رو داشته باشه 
+```
+[
+  {
+  _id: ObjectId('67cd90cefdd5c8185ddd2e9e'),
+  name: 'milad',
+  famile: 'bahrami',
+  email: 'milad@yahoo.com',
+  password: '12345678m',
+  age: '24',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  gender: 'male'
+},
+  {
+  _id: ObjectId('67cd90fffdd5c8185ddd2e9f'),
+  name: 'ali',
+  famile: 'karimi',
+  email: 'ali@yahoo.com',
+  password: '12345678a',
+  age: '24',
+  skills: [
+    'html',
+    'css',
+    'js'
+  ],
+  gender: 'male'
+},
+  {
+  _id: ObjectId('67cd9170fdd5c8185ddd2ea1'),
+  name: 'asghar',
+  famile: 'ahmadi',
+  email: 'asghar@yahoo.com',
+  password: '12345678as',
+  age: '19',
+  skills: [
+    'html',
+    'css'
+  ],
+  gender: 'male'
+},
+  {
+  _id: ObjectId('67cd923efdd5c8185ddd2ea3'),
+  name: 'yasin',
+  famile: 'shahkarami',
+  email: 'yasin@yahoo.com',
+  password: 'asdfasdfaYas',
+  age: '35',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs',
+    'nodeJs'
+  ],
+  gender: 'male'
+},
+  {
+  _id: ObjectId('67cd9268fdd5c8185ddd2ea4'),
+  name: 'shadman',
+  famile: 'bahrami',
+  email: 'milad@email.com',
+  password: '1fgf567sh',
+  age: '39',
+  skills: [
+    'html',
+    'css',
+    'js',
+    'react',
+    'nextJs'
+  ],
+  gender: 'male'
+}
+]
+```
+
+---
