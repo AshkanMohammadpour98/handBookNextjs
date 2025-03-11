@@ -29,6 +29,7 @@
   - قسمت پانزدهم [اپراتور-in$-و-nin$](اپراتور-in$-و-nin$)
   - قسمت شانزدهم [اپراتور-and$](اپراتور-and$)
   - قسمت هفدهم [اپراتور-$or](اپراتور-#or)
+  - قسمت هجدهم [اپراتور-all$-و-size$](اپراتور-all$-و-size$)
 
 
 ---
@@ -1377,6 +1378,181 @@ $or : [
   gender: 'male'
 }
 ]
+```
+
+---
+
+> # اپراتور all$ و size$
+
+  این دوتا اپراتور size , $all$ رو برای ارایه ها استفاده میکنیم  اگه خاطرتون باشه هر کدوم از داکیومنت های collection ما یه پراپرتی skills دارن 
+  
+```
+[
+
+{
+  _id: {
+    "$oid": "67cd90cefdd5c8185ddd2e9e"
+  },
+  name: "milad",
+  famile: "bahrami",
+  email: "milad@yahoo.com",
+  password: "12345678m",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd90fffdd5c8185ddd2e9f"
+  },
+  name: "ali",
+  famile: "karimi",
+  email: "ali@yahoo.com",
+  password: "12345678a",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd9132fdd5c8185ddd2ea0"
+  },
+  name: "nika",
+  famile: "shahkarami",
+  email: "nika@yahoo.com",
+  password: "12345678n",
+  age: "21",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  gender: "female"
+},
+{
+  "_id": {
+    "$oid": "67cd9170fdd5c8185ddd2ea1"
+  },
+  "name": "asghar",
+  "famile": "ahmadi",
+  "email": "asghar@yahoo.com",
+  "password": "12345678as",
+  "age": "19",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd920ffdd5c8185ddd2ea2"
+  },
+  "name": "mahsa",
+  "famile": "ahmadi",
+  "email": "mahsa@yahoo.com",
+  "password": "12345678ma",
+  "age": "40",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "female"
+},
+{
+  "_id": {
+    "$oid": "67cd923efdd5c8185ddd2ea3"
+  },
+  "name": "yasin",
+  "famile": "shahkarami",
+  "email": "yasin@yahoo.com",
+  "password": "asdfasdfaYas",
+  "age": "35",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd9268fdd5c8185ddd2ea4"
+  },
+  "name": "shadman",
+  "famile": "bahrami",
+  "email": "milad@email.com",
+  "password": "1fgf567sh",
+  "age": "39",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  "gender": "male"
+}
+
+]
+```
+  
+  هلا میخوام بگیم اونایی که این ارایه skills شون مثلا سه عضوی هست رو بهمون بده که با استفاده از size$ این کارو انجام میدییم:
+
+```
+db.users.find({
+	skills : { $size : 3 }
+})
+```
+که میگرده ببینه اونایی که پراپرتی skills شون سه عضو که مشخص کردیم رو داره رو میده که ما یه یوزر با این شرایط رو داریم 
+
+```
+{
+  _id: ObjectId('67cd90fffdd5c8185ddd2e9f'),
+  name: 'ali',
+  famile: 'karimi',
+  email: 'ali@yahoo.com',
+  password: '12345678a',
+  age: '24',
+  skills: [
+    'html',
+    'css',
+    'js'
+  ],
+  gender: 'male'
+}
+```
+
+اگه خاطرتون باشه ما یه اپراتور in$ داشتیم که برای ارایه ها بود و میگشت  ما بهش یه رشته میدادیم و برسی میکرد که این داخل اعضای اون ارایه هست یا نه 
+```
+db.users.find({
+	skills : { $in : ['react' , 'html'] }
+})
+```
+که ما تو این مثال بالا گفتیم یا 'html' یا 'react' الان اگه یکی از اینا هم داخل اون ارایه باشه یا هردوتاشون هم باشه بهمون اونا رو میده .
+
+
+اگه بخواییم بگیم دوتا شو باید داشته باشه میاییم از all$ استفاده میکنیم 
+```
+db.users.find({
+	skills : { $all : 'react' , 'html' }
+})
 ```
 
 ---
