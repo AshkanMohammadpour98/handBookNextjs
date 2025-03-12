@@ -30,6 +30,7 @@
   - قسمت شانزدهم [اپراتور-and$](اپراتور-and$)
   - قسمت هفدهم [اپراتور-$or](اپراتور-#or)
   - قسمت هجدهم [اپراتور-all$-و-size$](اپراتور-all$-و-size$)
+  - قسمت نوزدهم [متد_limit-و-skip](متد_limit-و-skip)
 
 
 ---
@@ -1556,3 +1557,469 @@ db.users.find({
 ```
 
 ---
+
+> # متد_limit-و-skip
+
+اگه وارد وب سایت mongodbtutorial.org بشیم به ادرس https://www.mongodbtutorial.org/mongodb-crud/   از navbar  سمت چپ یکم اسکرول کنیم پایین یه بخش داره به اسم SORTING & LIMITING روی لینک limit کلییک کنیم یه مقاله ای هست که میتونیم مطالعه کنیم 
+
+
+معنای کلمه limit یعنی (حد-اندازه-حدود-محدودکردن-اندازه-تعین کردن) همه این معانی رو میده خب ما دیتا بیسمون رو کالکشن user رو 10 تا یوزر کردیم
+
+
+```
+[
+
+{
+  _id: {
+    "$oid": "67cd90cefdd5c8185ddd2e9e"
+  },
+  name: "milad",
+  famile: "bahrami",
+  email: "milad@yahoo.com",
+  password: "12345678m",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd90fffdd5c8185ddd2e9f"
+  },
+  name: "ali",
+  famile: "karimi",
+  email: "ali@yahoo.com",
+  password: "12345678a",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd9132fdd5c8185ddd2ea0"
+  },
+  name: "nika",
+  famile: "shahkarami",
+  email: "nika@yahoo.com",
+  password: "12345678n",
+  age: "21",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  gender: "female"
+},
+{
+  "_id": {
+    "$oid": "67cd9170fdd5c8185ddd2ea1"
+  },
+  "name": "asghar",
+  "famile": "ahmadi",
+  "email": "asghar@yahoo.com",
+  "password": "12345678as",
+  "age": "19",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd920ffdd5c8185ddd2ea2"
+  },
+  "name": "mahsa",
+  "famile": "ahmadi",
+  "email": "mahsa@yahoo.com",
+  "password": "12345678ma",
+  "age": "40",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "female"
+},
+{
+  "_id": {
+    "$oid": "67cd923efdd5c8185ddd2ea3"
+  },
+  "name": "yasin",
+  "famile": "shahkarami",
+  "email": "yasin@yahoo.com",
+  "password": "asdfasdfaYas",
+  "age": "35",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd9268fdd5c8185ddd2ea4"
+  },
+  "name": "shadman",
+  "famile": "bahrami",
+  "email": "milad@email.com",
+  "password": "1fgf567sh",
+  "age": "39",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  "gender": "male"
+},
+{
+  _id: {
+    "$oid": "67d1a3fe06e5db9f69533eb9"
+  },
+  name: "bahram",
+  famile: "aliyasi",
+  email: "bahram@email.com",
+  password: "1fgf567sh",
+  age: "20",
+  skills: [
+    "html",
+    "css"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67d1a43c06e5db9f69533eba"
+  },
+  name: "narges",
+  famile: "mohammadi",
+  email: "nargism@yahoo.com",
+  password: "12dghdfgh678n",
+  age: "31",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs",
+    "typeScript"
+  ],
+  gender: "female"
+},
+{
+  _id: {
+    "$oid": "67d1a4aa06e5db9f69533ebb"
+  },
+  name: "shadi",
+  famile: "mohammadi",
+  email: "shadi@yahoo.com",
+  password: "ddsf1200",
+  age: "31",
+  skills: [
+    "html",
+    "css"
+  ],
+  gender: "female"
+}
+
+]
+
+
+```
+
+اگه ما تو وردی find مقدار اول رو فقط یه {} ابجکت خالی بزاریم یعنی همه کاربرا رو بهمون بده 
+```
+db.users.find({})
+```
+تو خروجی میبینیم که همه کابرایی که داریم رو میده 
+
+```
+[
+
+{
+  _id: {
+    "$oid": "67cd90cefdd5c8185ddd2e9e"
+  },
+  name: "milad",
+  famile: "bahrami",
+  email: "milad@yahoo.com",
+  password: "12345678m",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd90fffdd5c8185ddd2e9f"
+  },
+  name: "ali",
+  famile: "karimi",
+  email: "ali@yahoo.com",
+  password: "12345678a",
+  age: "24",
+  skills: [
+    "html",
+    "css",
+    "js"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67cd9132fdd5c8185ddd2ea0"
+  },
+  name: "nika",
+  famile: "shahkarami",
+  email: "nika@yahoo.com",
+  password: "12345678n",
+  age: "21",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  gender: "female"
+},
+{
+  "_id": {
+    "$oid": "67cd9170fdd5c8185ddd2ea1"
+  },
+  "name": "asghar",
+  "famile": "ahmadi",
+  "email": "asghar@yahoo.com",
+  "password": "12345678as",
+  "age": "19",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd920ffdd5c8185ddd2ea2"
+  },
+  "name": "mahsa",
+  "famile": "ahmadi",
+  "email": "mahsa@yahoo.com",
+  "password": "12345678ma",
+  "age": "40",
+  "skills": [
+    "html",
+    "css"
+  ],
+  "gender": "female"
+},
+{
+  "_id": {
+    "$oid": "67cd923efdd5c8185ddd2ea3"
+  },
+  "name": "yasin",
+  "famile": "shahkarami",
+  "email": "yasin@yahoo.com",
+  "password": "asdfasdfaYas",
+  "age": "35",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs"
+  ],
+  "gender": "male"
+},
+{
+  "_id": {
+    "$oid": "67cd9268fdd5c8185ddd2ea4"
+  },
+  "name": "shadman",
+  "famile": "bahrami",
+  "email": "milad@email.com",
+  "password": "1fgf567sh",
+  "age": "39",
+  "skills": [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs"
+  ],
+  "gender": "male"
+},
+{
+  _id: {
+    "$oid": "67d1a3fe06e5db9f69533eb9"
+  },
+  name: "bahram",
+  famile: "aliyasi",
+  email: "bahram@email.com",
+  password: "1fgf567sh",
+  age: "20",
+  skills: [
+    "html",
+    "css"
+  ],
+  gender: "male"
+},
+{
+  _id: {
+    "$oid": "67d1a43c06e5db9f69533eba"
+  },
+  name: "narges",
+  famile: "mohammadi",
+  email: "nargism@yahoo.com",
+  password: "12dghdfgh678n",
+  age: "31",
+  skills: [
+    "html",
+    "css",
+    "js",
+    "react",
+    "nextJs",
+    "nodeJs",
+    "typeScript"
+  ],
+  gender: "female"
+},
+{
+  _id: {
+    "$oid": "67d1a4aa06e5db9f69533ebb"
+  },
+  name: "shadi",
+  famile: "mohammadi",
+  email: "shadi@yahoo.com",
+  password: "ddsf1200",
+  age: "31",
+  skills: [
+    "html",
+    "css"
+  ],
+  gender: "female"
+}
+
+]
+
+
+```
+
+هلا میخواییم بگیم از فیلدهای یوزر ها نمیخوایم همه رو دریافت کنیم از فیلد هاشون فقط میخوایم name دریافت کنیم که بهش موضوع Projection هم میگیم  یعنی مقدار وردی find یه {} خالی و توی وردی دوم رو براش مشخص میکنیم که چیا میخوایم نشون بده وقتی یه {} خالی بزاریم همه یوزر ها رو میده و وقتی توی ورودی دوم براش تعین میکنیم که مثلا فقط name  رو میخوایم بخاطر همون name = 1 یعنی name رو میخواییم و _id=0  یعنی ایدی شونو نمیخوایم این ایدی رو اگه ننویسم و فقط اسم رو بنویسم خودش بصورت خودکار ایدی رو هم میزاره که ما مشخص کردیم که ایدی رو نمیخوایم 
+
+```
+db.users.find({} , {name : 1 , _id : 0})
+```
+که تو خروجی فقط name همه یوزرهایی که داریم رو بهمون میده 
+
+```
+[
+	{
+	  name: 'milad'
+	},
+	{
+	  name: 'ali'
+	},
+	{
+	  name: 'nika'
+	},
+	{
+	  name: 'asghar'
+	},
+	{
+	  name: 'mahsa'
+	},
+	{
+	  name: 'yasin'
+	},
+	{
+	  name: 'shadman'
+	},
+	{
+	  name: 'bahram'
+	},
+	{
+	  name: 'narges'
+	},
+	{
+	  name: 'shadi'
+	}
+]
+```
+
+هلا ما میخوایم بهش بگیم که یه تعداد خاصی از یوزرها رو میخوایم یعنی محدودش کنیم limit کنیم حدواندازشو مشخص کنیم که میخواییم در انتها از متد ()limit. استفاده میکنیم و به عنوان مقدار ورودیش باید یه عدد بدیم بهش که تعداد یوزر ها رو که میده رو مشخص کنیم . 
+
+```
+db.users.find({} , {name : 1 , _id : 0}).limit(3)
+```
+مثلا ما اینجا limit(3). دادیم فقط سه تای اول رو میده اگه بجای 3 بیاییم 0 بزاریم یعنی هیچی قرار ندادیم مثل اینگ هست که محدودیتی نداره و همه رو میده .
+
+```
+[
+	{
+	  name: 'milad'
+	},
+	{
+	  name: 'ali'
+	},
+	{
+	  name: 'nika'
+	}
+]
+```
+
+متد skip معنیش میشه نادیده گرفتن یا از قلم انداختن یا پرش کردن این معانی رو میده کاربدش برای نادیده گرفتن هست  یه مثال بزنیم 
+
+```
+db.users.find({} , {name : 1 , _id : 0}).skip(2).limit(2)
+```
+این .skip(2)  یعنی از دوتای اول پرش کن درنظر نگیر دوتای اول رو نادیده بگیر و .limit(2)  یعن  دوتای دیگه رو بهم بده یعنی الان دوتا یوزر اول رو نادیده میگیره و دوتا بعد از دوتای اول رو میده 
+
+```
+[
+	{
+	  name: 'nika'
+	},
+	{
+	  name: 'asghar'
+	}
+]
+```
+
+میتونیم از skip به تنهایی هم استفاده کنیم ما کلا 10 تا یوزر داشتیم  مثلا میگیم 9تای اول رو نادیده بگیر و فقط یکی میمونه که اون رو میده 
+```
+db.users.find({} , {name : 1 , _id : 0}).skip(9)
+```
+
+```
+[
+	{
+	  name: 'shadi'
+	}
+]
+```
