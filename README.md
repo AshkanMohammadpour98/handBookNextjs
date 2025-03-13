@@ -2109,7 +2109,8 @@ db.users.find().skip(3).limit(3)
 db.users.find().skip(6).limit(3)
 ```
 ```
-db.users.find().skip(9).limit(1)
+db.users.find().skip(9).limit(3)
 ```
+اینجا که گفتیم skip(9) میره از 9 مین داکیونت به اخر حساب میکنه که ما 10 تا داکیومنت یوزر داشتیم و گفتیم limit(3) اما چون فقط یکی مانده فقط اون رو میده به عنوان اخرین.
 
-هلا یه فورمول هم داریم برای بدست اوردن slip , pageNumber , limit
+
