@@ -38,6 +38,7 @@
   - قسمت اول [api-چیه؟](api-چیه؟)
   - قسمت دوم [json-چیست؟](json-چیست؟)
   - قسمت سوم [بررسی-routing-در-فولدر-api](بررسی-routing-در-فولدر-api)
+  - قسمت چهارم [آشنایی-با-handler-function](آشنایی-با-handler-function)
 
 
 
@@ -2370,6 +2371,41 @@ console.log(JSON.parse(jsonString))
 
  <div align="center">
   <img  src="./img/folderPagesAndApi-7.PNG">
+</div>
+
+---
+
+> # آشنایی با handler function
+
+تو قسمت قبل با فولدر api که تو فولدر pages هست آشنا شدیم . همونطور که میدونین فایل های js که توی فولدر api قرار میگیرن تبدیل به یه سری روت میشن بصورت اتوماتیک .
+مثلا ما میاییم داخل فولدر api یه فایل با اسم milad.js درست میکنیم .
+
+ <div align="center">
+  <img  src="./img/functionHandler-1.PNG">
+</div>
+
+ داخلش یه function درست میکنیم و اسمشو میتونیم چیز دلخواه بزاریم و handler میزارن اسمشو function handler میزاریم و اون رو export default میکنیم هالا این فانکشن دوتا ورودی  function handler(req , res) دریافت میکنه 
+ الان این فایل milad.js که توی فولدر api هست بصورت مستقیم داخل فولدر api هست روت localhost:3000/api/milad رو ایجاد کرده .
+
+ وقتی ما تو فولدر api یه فایل ایجاد میکنیم از اون فایل باید یک فانکشن export default بشه اون فانکشن گفتیم اسم دلخواه میگیره ولی بشتر handler میزارن اینطوری مرسوم هست هلا این ورودی هاش که req و res هست رو میتونیم بصورت کامل هم بنویسیم مثلا request , response ولی بصورت خلاصه مینویسن req , res که این req میشه همون ارسال درخاست از سمت مرورگر client به سمت server  و res میشه همون دریافت پاسخ از سمت سرور به سمت مرورگر client 
+
+ ```js
+// milad.js
+
+export default function handler(req , res){
+    res.json({name : 'milad'})
+}
+```
+ما اومدیم از res یا همون موقع دریافت استفاده کردیم که یه متد وجود داره این res , req که به ورودی فانکشن دادیم هر دوشون یه object هستن درواقع هلا یه متد وجود داره توی ابجکت res به اسم json وضیفش اینه که یه فایل json رو بفرسته به سمت مروگر بقرسته به سمت مرورگر کاربر درواقع یه رشته json رو میفرسته به سمت مرورگر کاربر که ما بهش یه ابجکت دادیم {name : 'milad'} 
+
+
+
+وقتی کاربر بیاد وارد ادرس localhost:3000/api/milad بشه این فانکشن handler اجرا میشه و ما بهش گفتیم به عنوان response بعنوان پاسخ بیا این متن json رو بفرست به سمت client 
+
+
+
+ <div align="center">
+  <img  src="./img/functionHandler-2.PNG">
 </div>
 
 ---
