@@ -2436,4 +2436,94 @@ export default function handler(req , res){
 
 `پس وفتی ما بخواییم از سمت مرورگر یه درخاستی ارسال کنیم میتونیم متد یا روش ارسال درخاستمون رو مشخص کنیم که ما داریم این درخاست این request رو داریم با متد GET یا POST یا DELETE یا PATCH , PUT ارسال میکنیم `
 
----
+
+
+هلا میخواییم اینایی که گفتیم رو اجرا کنیم تاحدودی البته بعدن بصورت کامل اجرا میکنیم
+
+<div align="center">
+  <img  src="./img/folderStruchure method.PNG">
+</div>
+
+داخل پوشه pages یه پوشه api داریم  که یه فایل درست میکنیم مثلا milad.js و داخل index.js که صفحه اصلی یا همون روت اصلی هست هم سه تا دکمه درست میکنیم برای انواع ارسال درخاست هامون
+
+```jsx
+// pages>index.js
+
+export default function Home() {
+
+  const getRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/milad' , {method : 'GET'})
+    const data = await res.json()
+    console.log(data);
+    
+  }
+  const postRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/milad' , {method : 'POST'})
+    const data = await res.json()
+    console.log(data);
+  }
+  const putRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/milad' , {method : 'PUT'})
+    const data = await res.json()
+    console.log(data);
+  }
+  const deleteRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/milad' , {method : 'DELETE'})
+    const data = await res.json()
+    console.log(data);
+  }
+
+  return (
+    <>
+      <button onClick={getRequestHandler}>get request</button>
+      <button onClick={postRequestHandler}>post request</button>
+      <button onClick={putRequestHandler}>put request</button>
+      <button onClick={deleteRequestHandler}>delete request</button>
+    </>
+  );
+}
+
+```
+```
+// pages>api>milad.js
+
+ export default function handler(req , res){
+    if(req.method == 'GET'){
+        res.json({name : 'milad' , family : 'bahrami'})
+    }else if(req.method == 'POST'){
+        res.json({message : 'new user added to database'})
+    }else if(req.method == 'PUT'){
+        res.json({message : 'users update success fully'})
+    }else if(req.method == 'DELETE'){
+        res.json({message : 'user delete success fully'})
+    }
+ }
+```
+الان ما یه جورایی شبیه سازی کردیم ولی بعدن اینارو عملا برسی میکنیم داریم شبیه سازی میکنیم مثلا اگر درخاستی با متد POST ارسال شد از سمت سرور باید این مثلا json فرستاده بشه به سمت کلاینت.
+
+
+اگه روی دکمه get request کلیک کنیم تو کنسول مرورگر اینو نشون میده :
+```
+{
+name: "milad",
+family: "bahrami"
+}
+```
+
+اگه روی دکمه post request کلیک کنیم تو کنسول مرورگر اینو نشون میده :
+```
+{message: 'new user added to database'}
+```
+
+اگه روی دکمه put request کلیک کنیم تو کنسول مرورگر اینو نشون میده :
+```
+{message: 'users update success fully'}
+```
+اگه روی دکمه delete request کلیک کنیم تو کنسول مرورگر اینو نشون میده :
+
+```
+{message: 'user delete success fully'}
+```
+
+مثلا وقتی روی دکله post request کلیک میکنیم از سمت کلاینت مرورگرما  میاد توی سرور این کد ها چک میکنه که ببینه method کدومه درخاستی که ارسال شده method کدومه  و پاسخ رو تو response بهمون میده میفرسته سمت کلاینت مرورگرما
+--- 
