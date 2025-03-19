@@ -2538,4 +2538,51 @@ family: "bahrami"
 ```js
 // pages>api>users>index
 
+const users = [
+
+    {
+        name: "milad",
+        famile: "bahrami",
+        email: "milad@yahoo.com",
+        password: "12345678m",
+        age: "24",
+        gender: "male"
+      },
+      {
+        name: "ali",
+        famile: "karimi",
+        email: "ali@yahoo.com",
+        password: "12345678a",
+        age: "24",
+        gender: "male"
+      },
+      {
+        name: "nika",
+        famile: "shahkarami",
+        email: "nika@yahoo.com",
+        password: "12345678n",
+        age: "21",
+        gender: "female"
+      },
+      {
+        
+        name: "asghar",
+        famile: "ahmadi",
+        email: "asghar@yahoo.com",
+        password: "12345678as",
+        age: 19,
+       
+        gender: "male"
+      },
+
+]
+
+export default function handler(req , res){
+    if(req.method == 'GET'){
+        res.json(users)
+    }
+}
 ```
+فعلا ما چون کار با اتصال nextjs به mongodb رو یادنگرفتیم بخاطر اینکه کدمون یکم اصولی تر باشه اومدیم یه ارایه users درست کردیم همونطور که میبینین که اطلاعات 4 تا یوزر رو داخلش درست کردیم اگه الان وارد ادرس localhost:3000/api/users بشیم یه request میزنیم داریم درواقع به این ادرس و تو response میبینیم که اون josn رو بهمون میده که یه ارایه هست که  چهارتا object داخلش هست که یوزرهای ما هستن. هلا جلوتر میریم این اصلاعات رو از دیتابیس میگیریم نه یه ارایه user درست کنیم .
+
+---
