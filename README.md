@@ -41,6 +41,7 @@
   - قسمت چهارم [آشنایی-با-handler-function](آشنایی-با-handler-function)
   - قسمت پنجم [آشنایی-با-http-request-methods](آشنایی-با-http-request-methods)
   - قسمت ششم [ارسال-درخواست-با-متد-GET](ارسال-درخواست-با-متد-GET)
+  - قسمت هفتم [ارسال-درخواست-با-متد-GET](ارسال-درخواست-با-متد-GET)
 
 
 
@@ -2584,5 +2585,121 @@ export default function handler(req , res){
 }
 ```
 فعلا ما چون کار با اتصال nextjs به mongodb رو یادنگرفتیم بخاطر اینکه کدمون یکم اصولی تر باشه اومدیم یه ارایه users درست کردیم همونطور که میبینین که اطلاعات 4 تا یوزر رو داخلش درست کردیم اگه الان وارد ادرس localhost:3000/api/users بشیم یه request میزنیم داریم درواقع به این ادرس و تو response میبینیم که اون josn رو بهمون میده که یه ارایه هست که  چهارتا object داخلش هست که یوزرهای ما هستن. هلا جلوتر میریم این اصلاعات رو از دیتابیس میگیریم نه یه ارایه user درست کنیم .
+
+---
+
+> # ارسال درخواست با متد GET
+
+تو این قسمت میخواییم یه صفحه users درست کنیم که یوزرهامونو تو اون صفحه نمایش بدیم و برای  گرفتن اطلاعات یوزرهامون میتونیم یه درخواست بزنیم به ادرس https://jsonplaceholder.typicode.com/users و یا از اون فایل که تو قسمت قبل درست کرده بودیم که چهار تا یوزر داشت و تو فایل پوشه pages > api > users > index.js درست کرده بودیم میتونیم استفاده کنیم که روتش میشد http://localhost:3000/api/users استفاده کنیم .
+خب ما اول اومدیم یه روت user درست کردیم تو پوشه pages یه پوشه درست کردیم به اسم users و داخلش یه فایل index.js ساختیم و اسم کامپوننت رو گزاشتیم users
+
+```js
+//pages>users>index.js
+import UserDetail from "@/components/userdetail"
+import styles from '@/styles/user.module.css'
+import { useEffect, useState } from "react"
+
+
+export default function users(){
+
+    const [users , setUser] = useState([])
+    const getUsers = async ()=>{
+        const res = await fetch('http://localhost:3000/api/users')
+        const data = await res.json()
+        setUser(data);
+        console.log(data);
+        
+    }
+    useEffect(()=>{
+        getUsers()
+    } , [])
+
+    return (
+        <>
+            <h1>All Users</h1>
+            {
+                users.map((user)=>(
+                    <div className={styles.user} key={user.id}>
+                        <UserDetail {...user}/>
+                    </div>
+                    
+                ))
+            }
+           
+        </>
+    )
+} 
+
+```
+اگه دقت کنین ما تو قسمت fetch('http://localhost:3000/api/users',{method : 'GET'}) و دیگه تو پارامتر دوم که یه ابجکت هست نوع ارسال درخاست رو نگفتیم که get هست چون بصورت پیشفرض خودش با method get ارسال میشه درخاست
+تو روت اصلی یه پوشه componets درست کریدم میخوایم یه کامپوننت به اسم userDetail داشته باشیم که وقتی اطلاعات یوزرهارو از دیتابیس گرفتیم برای هرکدوم از یوزر ها استفاده کنیم پس داخل پوشه components یه فایل userDetail.js داریم .
+```js
+//components>userdetail.js
+
+ function UserDetail ({id , name , family , age , email }){
+    return(
+        <div>
+            <p>name : </p><b>{name}</b>
+            <p>family : </p><b>{family}</b>
+            <p>gamil : </p><b>{email}</b>
+            <p>age : </p><b>{age}</b>
+        </div>
+    )
+}
+export default UserDetail
+```
+
+وهمچنین اون فایل که ساخته بودیم تو پوشه api خودمون شبیه سازی کرده بودیم یه دیتابس رو . داخل پوشه pages , پوشه api یه پوشه داریم به اسم user و داخل اون index.js
+
+```js
+//pages>api>users>index.js
+const users = [
+
+    {
+        id: 1,
+        name: "milad",
+        family: "bahrami",
+        email: "milad@yahoo.com",
+        password: "12345678m",
+        age: 24,
+        gender: "male"
+      },
+      {
+        id : 2,
+        name: "ali",
+        family: "karimi",
+        email: "ali@yahoo.com",
+        password: "12345678a",
+        age: 24,
+        gender: "male"
+      },
+      {
+        id : 3,
+        name: "nika",
+        family: "shahkarami",
+        email: "nika@yahoo.com",
+        password: "12345678n",
+        age: 21,
+        gender: "female"
+      },
+      {
+        id : 4,
+        name: "asghar",
+        family: "ahmadi",
+        email: "asghar@yahoo.com",
+        password: "12345678as",
+        age: 19,
+       
+        gender: "male"
+      },
+
+]
+
+export default function handler(req , res){
+    if(req.method == 'GET'){
+        res.json(users)
+    }
+}
+```
 
 ---
