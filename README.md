@@ -42,6 +42,7 @@
   - قسمت پنجم [آشنایی-با-http-request-methods](آشنایی-با-http-request-methods)
   - قسمت ششم [ارسال-درخواست-با-متد-GET](ارسال-درخواست-با-متد-GET)
   - قسمت هفتم [ارسال-درخواست-با-متد-GET](ارسال-درخواست-با-متد-GET)
+  - قسمت هشتم [dynamic-api-route](dynamic-api-route)
 
 
 
@@ -2701,5 +2702,75 @@ export default function handler(req , res){
     }
 }
 ```
+
+---
+
+> # dynamic api route
+
+قبلا با روت های داینامیک dynamic route اشنا شدیم هالا میخواییم ببنیم توی فولدر api چطور میتونیم روت داینامیک داشته باشیم طریقه کار مثل همون روت داینامیک هست .ما توی قسمت قبل داخل فولدر pages یه فولدر api هست که دالخش ما یه فولدر users و داخلش یه فایل index.js درست کرده بودیم که اطلاعات همه یوزر ها رو داشتیم یه جورایی کالکشن users تو mongodb رو شبیه سازی کرده بودیم و اگه یه درخاست GET میزدیم به این اون اطلاعات رو درقالب رشته json بهمون میداد که روتش این هست localhost:3000/api/users هلا میخواییم یه روت داینامیک api درست کنیم میاییم کنار همین index.js که داخل فولدر users هست یه فایل js[userId]. درست میکنیم میخواییم مثلا اگه زدیم localhost:3000/api/users/1 اطلاعات اون یوزر اول رو بگیریم مثل اون api فیک سایت jsonplasholder که وقتی میزدی اخر ادرسش 1/users... یا 2/users... اطلاعات اون یوزر رو میداد درواقع میره و اون یوزر که مثلا ایدیش 1 هست رو میده ااون رو پیدا میکنه دیگه همه یوزرها رو نمیده. ما هم میخواییم همین کارو کنیم روت داینامیک api توسعه بدیم 
+
+
+```js
+//pages>api>users>[userId].js
+
+const users = [
+
+    {
+        id: 1,
+        name: "milad",
+        family: "bahrami",
+        email: "milad@yahoo.com",
+        password: "12345678m",
+        age: 24,
+        gender: "male"
+      },
+      {
+        id : 2,
+        name: "ali",
+        family: "karimi",
+        email: "ali@yahoo.com",
+        password: "12345678a",
+        age: 24,
+        gender: "male"
+      },
+      {
+        id : 3,
+        name: "nika",
+        family: "shahkarami",
+        email: "nika@yahoo.com",
+        password: "12345678n",
+        age: 21,
+        gender: "female"
+      },
+      {
+        id : 4,
+        name: "asghar",
+        family: "ahmadi",
+        email: "asghar@yahoo.com",
+        password: "12345678as",
+        age: 19,
+        gender: "male"
+      },
+
+]
+
+export default function handler(req , res){
+    const {userId} = req.query
+    const user = users.find((userItem)=> userItem.id == userId)
+    console.log(user);
+    
+    if(user){
+        res.json(user)
+    }else{
+        res.json({massage : 'user not found'})
+    }
+    
+}
+
+```
+بازم میگم ما چون قعلا بلد نیستیم به دیتابیس mongodb متصل بشیم با نکست اومدیم دیتابیس رو تو یه ارایه []const users شبیه سازی کردیم فرض کردیم این ارایه users همون کالکشن users هست که توی دیتابیسمون وجود داره .
+مثلا کاربر میاد وارد همچنین روتی میشه localhost:3000/api/users/1 ما باید این 1 رو از توی این ادرس بکشیم بیرون باید بهش دسترسی داشته باشیم بعد روی این ارایه users یه find بزنیم بگردیم اونی که id = 1 هست رو پیدا کنیم و اون رو باید بعنوان response بفرستیم سمت کاربر برای دسترسی به این انتهای ادرس که مثلا 1 هست این req که گفتیم یه ابجکت هست یه متد داره به اسم req.query  که داخل کد ها هم ازش log گرفتیم میتونیم مشاهدش کنیم دقت کنیم که log های که توی فولدرapi میگیریم چون اینا سمت سرور اجرا میشن پس log هم تو ترمینال قابل مشاهده هست `هر کدی که داخل فولدر api بنویسیم سمت بکند اجرا میشن نه سمت فرانت و چون سمت بکند اجرا میشن وقتی ما داخل این کدها log داشته باشیم نتیجه اون رو میتونیم داخل ترمینال ببینیم` این req.query این متدی که داره هم یه ابجکت میده {'userId : '6} هلا این userId هم اسم با همین فایل هست که بصورت داینامیک گزاشتیم هست  که ما اون رو Object Destructuring انجام دادیم .
+
+ما چهار تا یوزر داریم توی دیتابیسمون اگه بیاییم تو روت بزنیم localhost:3000/api/users/5 نداریم باید این رو هندل کنیم توی کد بالا نوشتیم if(user) اینطوریه که میگه اگه یوزر وجود داشت این if اجرا بشه و اگه وجود نداشت else اجرا میشه 
 
 ---
