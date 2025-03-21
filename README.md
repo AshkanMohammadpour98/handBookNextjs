@@ -2877,3 +2877,147 @@ export default function handler(req , res){
 > # آشنایی-با-request-body
 
 میخوایم با مفهوم مهم request body آشنا بشیم یه مثال بزنیم برای درک بهتر
+
+<div align="center">
+  <img  src="./img/AcquaintanceWithRequestBody.png">
+</div>
+
+فرض کنین ما وارد یه وب سایتی شدیم و میخوایم توی اون وب سایت ثبت نام انجام بدیم که مثلا یه فرم وجود داره که ازمون یه سری اطلاعات برای ثبت نام میخواد و یه دکمه ثبت نام وجود داره بعد از اینکه ما اطلاعاتمون رو وارد کردیم و روی دکمه ثبت نام کلیک کردیم یه درخواست از سمت کلاینت که میشه ما یا مرورگر ما فرستاده میشه به سمت سرور وب سایت و این اطلاعاتی که ما وارد کردیم توی فرم باید یه جوری فرستاده بشن به سمت سرور!! هلا این اطلاعات کجا قرار میگیرن؟ کجای request  هستن کجای درخواست مون قرار میگیرن؟ توی بدنه درخواست . توی body درخواست که بهش میگیم request body `پس request body اینه  ما میتونیم توی request body  یا بدنه درخواست بدنه request که به سمت سرور ارسال میشه از سمت client اطلاعاتی رو ارسال کنیم به سمت سرور هلا اون اطلاعات میتونه یه متن ساده باشه میتونه فرمت json باشه ` الان توی این مثال که داریم وقتی اطلاعاتمون رو وارد میکنیم یه همچین اطلاعاتی که json هست یعنی با فرمت json این ابجکت توی request body یا بدنه درخواست قرار میگیره و ازسمت مرورگر فرستاده میشه به سمت سرور و ما میتونیم از سمت سرور به این ابجکت درسترسی داشته باشیم یعنی توی سرور میتونیم اینو دریافت کنیم . و متوجه میشیم کاربر اطلاعاتش رو چی وارد کرده و روی دکمه ثبت نام زده.
+
+هب بریم که از سمت فرانت یه درخواست post بزنیم و اطلاعات رو تو request body ارسال کنیم به api . خب ما یه دکمه دیگه درست میکنیم برای اینکار که اسمشو send user body گزاشتیم تو قسمت های قبل داخل صفحه اصلی وب سایتمون روت اصلی index.js چهار تا دکمه داشتیم یه دکمه دیگه هم برای اینکار درست میکنیم که با متد POST میخوایم requst بزنیم به سرور با api 
+
+پس ما میخوایم یه دکمه داشته باشیم که وقتی روی اون کلیک میشه از سمت مرورگر یه درخواستی فرستاده بشه به سمت سرور وتوی بدنه درخواست بیاییم یه سری اطلاعات رو بفرستیم به سمت سرور و درنهایت به respons متناسب هم دریافت کنیم 
+
+```js
+// index.js
+// localhost:300 این فایل روت اصلی هست  صفحه اصلی
+
+
+export default function Home() {
+ 
+
+  const getRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/users' , {method : 'GET'})
+    const data = await res.json()
+    console.log(data);
+    
+  }
+  const postRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/users' , {method : 'POST'})
+    const data = await res.json()
+    console.log(data);
+  }
+  const putRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/users' , {method : 'PUT'})
+    const data = await res.json()
+    console.log(data);
+  }
+  const deleteRequestHandler = async ()=>{
+    const res = await fetch('http://localhost:3000/api/users' , {method : 'DELETE'})
+    const data = await res.json()
+    console.log(data);
+  }
+  const sendUserBody = async ()=> {
+    const res = await fetch('http://localhost:3000/api/users',{
+        method : 'POST',
+        body : JSON.stringify(
+          {
+            name : 'reza',
+            family : 'bahrami',
+            email : 'rezabahrami@gamil.com',
+            password : '14445d',
+            age : 21,
+            gender : 'male'
+          }
+        ),
+        headers :{
+          'Content-Type' : 'application/json'
+        }
+      })
+    const data = await res.json()
+    console.log(data);
+    
+  }
+
+  return (
+    <>
+      <button onClick={getRequestHandler}>get request</button>
+      <button onClick={postRequestHandler}>post request</button>
+      <button onClick={putRequestHandler}>put request</button>
+      <button onClick={deleteRequestHandler}>delete request</button>
+      <button onClick={sendUserBody}>send user body</button>
+    </>
+  );
+}
+```
+ما اینجا اومدیم یه دکمه با اسم send user body درست کردیم که بهش یه فانکشن sendUserBody دادیم و داخل اون فانکشن که تعریف کردیم و از نوع async هست یه request ارسال کردیم به ادرس http://localhost:3000/api/users البته میتونیم بجای این ادرس چون الان سرور ما با کدهای فرانتمون یکجا هستن و از همونجا داریم request میزنیم میتونیم بجای اینکه این ادرس رو مطلق بنویسیم اینطور که نوشتیم میتونیم بجاش مثل مسیردهی به یه فایل بهش ادرس بدیم یعنی اینطوری میشه api/users/ اینطوری هم میشه . و توی وردی دوم هم یه {} دادیم که توش method رو مشخص کردیم و یه body دادیم که میشه بدنه درخواست ما که اونو مشحص کردیم که یه ابچکتی رو مشخص کردیم  میخوایم این ابچکت ارسال بشه به سرور همراه با ارسال درخواستمون به سرور البته یادتون نره باید بصورت رشته josn این اطلاعات رو بفرستیم که یه متد داشتیم به اسم stringfy() که اگه یه ابجکت جاوااسکریپتی بهش میدادیم تبدیلش میکرد به یه متن json و درنهایت Content-Type رو مشخص کردیم اینو بعدن بهاش اشنا میشیم گفتیم محتوای که داریم ارسال میکنیم از نوع جی سون است 
+
+```js
+// pages>api>users>index.js
+// localhost:3000/api/users
+
+const users = [
+  {
+    id: 1,
+    name: "milad",
+    family: "bahrami",
+    email: "milad@yahoo.com",
+    password: "12345678m",
+    age: 24,
+    gender: "male",
+  },
+  {
+    id: 2,
+    name: "ali",
+    family: "karimi",
+    email: "ali@yahoo.com",
+    password: "12345678a",
+    age: 24,
+    gender: "male",
+  },
+  {
+    id: 3,
+    name: "nika",
+    family: "shahkarami",
+    email: "nika@yahoo.com",
+    password: "12345678n",
+    age: 21,
+    gender: "female",
+  },
+  {
+    id: 4,
+    name: "asghar",
+    family: "ahmadi",
+    email: "asghar@yahoo.com",
+    password: "12345678as",
+    age: 19,
+
+    gender: "male",
+  },
+];
+
+export default function handler(req, res) {
+  if (req.method == "GET") {
+    res.json(users);
+  } else if (req.method == "DELETE") {
+    res.json({ message: "delete users" });
+  } else if (req.method == "PUT") {
+    res.json({ message: "update user" });
+  } else if (req.method == "POST") {
+    const { name, family, age, email, password, gender } = req.body;
+//از طریق req.body میتونیم به request body دسترسی داشته باشیم که یه ابجکت هست و اطلاعات رو داره که ما اینجا اون رو دیستراکچر کردیم.
+    console.log(name);
+
+    if (name) {
+//داخل این شرط گفتیم که اگه name وجود داشت بیا اینو نمایش بده چون ما یه درخواست دیگه هم از نوع POST داشتیم که اگه اینو نمینوشتیم اونجا undefind نمایش میداد
+      res.json({ massage: `${name} add new user` });
+    } else {
+      res.json({ massage: "add new user" });
+    }
+  }
+}
+```
+یادمون نره که log های توی پوشه api هست چون سمت سرور اجرا میشن توی terminal نمایش داده میشن . 
+
+
+---
