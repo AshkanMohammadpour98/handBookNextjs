@@ -44,6 +44,7 @@
   - قسمت هفتم [ارسال-درخواست-با-متد-GET](ارسال-درخواست-با-متد-GET)
   - قسمت هشتم [dynamic-api-route](dynamic-api-route)
   - قسمت نهم [status-code-چیست؟](status-code-چیست؟)
+  - قسمت دهم [تعین-status-code](تعین-status-code)
 
 
 
@@ -2780,7 +2781,8 @@ export default function handler(req , res){
 
 ---
 
-status code چیست؟
+# > status code چیست؟
+
 میخوایم با response status code آشنا بشیم رو هم رفته status code که میشه کد وضعیت میخواییم بدونیم که این چیه دقیقن status code
 
 <div align="center">
@@ -2790,7 +2792,7 @@ status code چیست؟
 وقتی ما ادرس یه وب ساتی رو داخل مرورگر وارد میکنیم مرورگر ما نقش client رو بازی میکنه و وقتی ما میخواییم اون صفحه رو ببینیم یه request یا درخواست ارسال میشه به سمت سرور اون وب سایت سرور هم میاد یه response یا پاسخی رو به سمت client میفرسته هلا ممکنه همیشه بصورت موفقیت امیز اون پاسخ یا اون درخواست ارسال نشه ممکنه Error به وجود بیاد ممکنه ارور سمت خود سرور باشه یا ممکنه سمت cliet باشه بهرحال `سرور به همراه اون response پاسخی که ارسال میکنه به سمت client یه کد سه رقمی هم ارسال میکنه که بهش میگیم status code و اون کد نشان دهنده وضعیت request ما هست ` مثلا اگه همه چیز موفقیت آمیز باشه و وب سایت به درستی دریافت بشه سرور کد 200 رو ارسال میکنه که به معنای موفقیت امیز بودن درخواست ما هست مثلا ممکنه براتون اتفاق افتاده باشه که وقتی وارد یه وب سایتی میشید وارد یه ادرسی میشید ممکنه اون ادرس تو اون وب سایت وجود نداشته باشه و وب سایت کد 404 رو بهتون نشون میده که یه معنی notfound هست هلا بریم این دوتا رو برسی کنیم که معروف ترین هاشون هستن.
 
 <div align="center">
-  <img  src="./img/statusCode-1statusCode-4.PNG">
+  <img  src="./img/statusCode-4.PNG">
 </div>
 ما مثلا وارد وب سایت next1code.ir میشیم و وارد مثلا دوره nodejs میشیم و بعد inspect میگیریم و وارد تب Network که داخل تصویر میبینیم که یه درخواست فرستاده شده سمت سرور این وب سایت و همه چیز با موفقیت دریافت شده و اروری نداریم میبینیم که status code ما 200 هست و متنش یعنی status message هم ok هست اون متن بیغامش ok هست .
 هلا اگه ما بجای nodejs بنویسیم php چون همچین دوره اینداریم همجین ادرسی نداریم status message 404 میده و متن پیغام یا status massage Not Found میده .
@@ -2799,3 +2801,72 @@ status code چیست؟
 
 ---
 
+# > تعین status-code
+تو قسمت قبل با مفهوم status code آشنا شدیم وقتی ما یه request از سمت کلاینت ارسال میکنیم به سمت سرور،سرور درخواست رو دریافت میکنه و باید یه پاسخ متناسبی رو ارسال کنه سمت client و وقتی داره response رو ارسال میکنه سمت client اون status code رو هم میتونم مشخص کنیم که به همراه response ارسال میشه سمت client . پس ما میتونیم status code رو مشخص کنیم .
+
+ما یه روت داینامیک داشتیم میخوایم برای response موفق و ناموفق براش status code بنویسیم که به دو روش میتونیم بنویسیم .
+
+```js
+//pages>api>users>[userId].js
+
+const users = [
+
+    {
+        id: 1,
+        name: "milad",
+        family: "bahrami",
+        email: "milad@yahoo.com",
+        password: "12345678m",
+        age: 24,
+        gender: "male"
+      },
+      {
+        id : 2,
+        name: "ali",
+        family: "karimi",
+        email: "ali@yahoo.com",
+        password: "12345678a",
+        age: 24,
+        gender: "male"
+      },
+      {
+        id : 3,
+        name: "nika",
+        family: "shahkarami",
+        email: "nika@yahoo.com",
+        password: "12345678n",
+        age: 21,
+        gender: "female"
+      },
+      {
+        id : 4,
+        name: "asghar",
+        family: "ahmadi",
+        email: "asghar@yahoo.com",
+        password: "12345678as",
+        age: 19,
+        gender: "male"
+      },
+
+]
+
+export default function handler(req , res){
+    const {userId} = req.query
+    const user = users.find((userItem)=> userItem.id == userId)
+    console.log(user);
+    
+    if(user){
+	//روش اول
+	res.statusCode = 200
+        res.json(user)
+    }else{
+	//روش دوم
+        res.status(404).json({massage : 'user not found'})
+    }
+    
+}
+
+```
+الان اگه ما وارد روت localhost:3000/api/users/1 بشیم و از صفحه inspect بگیریم و وارد تب Network بشیم و روی این فایل کلیک کنیم میبینیم که نوشته status code : 200 ok اما اگه وارد روت localhost:3000/api/users/20 بشیم چون ما 4 تا یوزر داریم و این یوزر رو نداریم مینویسه status code : 404 notFound 
+
+---
