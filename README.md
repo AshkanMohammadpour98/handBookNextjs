@@ -47,6 +47,7 @@
   - قسمت هشتم [dynamic-api-route](dynamic-api-route)
   - قسمت نهم [status-code-چیست؟](status-code-چیست؟)
   - قسمت دهم [تعین-status-code](تعین-status-code)
+  - قسمت یازدهم [آشنایی-با-request-body](آشنایی-با-request-body)
 
 
 
@@ -2872,3 +2873,7 @@ export default function handler(req , res){
 الان اگه ما وارد روت localhost:3000/api/users/1 بشیم و از صفحه inspect بگیریم و وارد تب Network بشیم و روی این فایل کلیک کنیم میبینیم که نوشته status code : 200 ok اما اگه وارد روت localhost:3000/api/users/20 بشیم چون ما 4 تا یوزر داریم و این یوزر رو نداریم مینویسه status code : 404 notFound 
 
 ---
+
+> # آشنایی-با-request-body
+
+میخوایم با مفهوم مهم request body آشنا بشیم یه مثال بزنیم برای درک بهتر
