@@ -48,6 +48,7 @@
   - قسمت نهم [status-code-چیست؟](status-code-چیست؟)
   - قسمت دهم [تعین-status-code](تعین-status-code)
   - قسمت یازدهم [آشنایی-با-request-body](آشنایی-با-request-body)
+  - قسمت دوازدهم [آشنایی-با-request-body](آشنایی-با-request-body)
 
 
 
@@ -3019,5 +3020,78 @@ export default function handler(req, res) {
 ```
 یادمون نره که log های توی پوشه api هست چون سمت سرور اجرا میشن توی terminal نمایش داده میشن . 
 
+
+---
+
+توی قسمت قبل یه دکمه send user body  داشتیم که وقتی روش کلیک میکردیم کد های فانکشن sendUserBody اجرا میشد که یه درخاست POST و با body رو هم خودمون که یه ابجکت با رشته json که خودمون نوشته بودیم فرستاده میشد request میشد به سمت بکند و اونجا به این اطلاعات دسترسی داشتیم توسط req.body اطلاعاتی که توی request body ارسال کردیم رو میتونیم سمت بکند دریافت کنیم و بعد این اطلاعات رو توی دیتابیس ثبت میکنیم تو این قسمت میخواییم بجای اینکه خودمون بنویسیم بصورت دستی  چند input داشته باشیم که کاربر وقتی اونا رو پر میکنه اطلاعات گرفته بشن و برن سمت دیتابیس  ما داریم دربافت اطلاعات رو کار میکنیم ثبت تو دیتابیس و ارتباط نکست جی اس با mongodb رو تو فصل اینده برسی میکنیم.
+
+<div align="center">
+  <img  src="./img/body-query-1.PNG">
+</div>
+
+```js
+//pages>index.js
+import styles from '@/styles/Home.module.css'
+import { useState } from "react";
+
+export default function Home() {
+ 
+  const [name , setName] = useState('')
+  const [family , setFamily] = useState('')
+  const [email , setEmail] = useState('')
+  const [password , setPassword] = useState('')
+  const [age , setAge] = useState('')
+ 
+  const sendRequestHandler = async ()=> {
+    const res = await fetch('http://localhost:3000/api/users',{
+        method : 'POST',
+        body : JSON.stringify(
+          {
+//میدونیم که توی ES6 توی ابجکت اگه پراپرتی و ولیو همنام باشن میتونییم یکی شونو بنویسیم
+            name ,
+            family ,
+            email,
+            password,
+	    age
+          }
+        ),
+        headers :{
+          'Content-Type' : 'application/json'
+        }
+      })
+    const data = await res.json()
+    console.log(data);
+    
+  }
+
+  return (
+    <>
+    <div className={styles.form}>
+      <input type="text" placeholder='name' value={name} onChange={(e)=>{setName(e.target.value)}} />
+      <input type="text" placeholder='family' value={family} onChange={(e)=>{setFamily(e.target.value)}} />
+      <input type="email" placeholder='email' value={email} onChange={(e)=>{setEmail(e.target.value)}} />
+      <input type="password" placeholder='password' value={password} onChange={(e)=>{setPassword(e.target.value)}} />
+      <input type="number" placeholder='age' value={age} onChange={(e)=>{setAge(e.target.value)}} />
+      <button onClick={sendRequestHandler}>send request</button>
+    </div>
+    </>
+  );
+}
+```
+
+الان وقتی روی دکمه send request کلیک میشه اطلاعات داخل input ها تو state هایی که نوشتیم درنهایت یه ابجکت درست کردیم ذخیره میشن و فرستاده میشن به سمت بکند ما اومدیم به ازای هرکدوم از input ها یه state نوشتیم البته روش های دیگه ای هم داره که میتونستیم فقط با یه state این کارو بکنیم 	
+
+```js
+//pages>api>users>index.js
+
+export default function handler(req, res) {
+ if (req.method == "POST") {
+    const { name, family, age , email, password } = req.body;
+    console.log(name);//اینو سمت ترمینال نشون میده
+    res.json({name , family , age , email , password}) 
+  }
+}
+
+```
 
 ---
