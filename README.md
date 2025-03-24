@@ -49,6 +49,7 @@
   - قسمت دهم [تعین-status-code](تعین-status-code)
   - قسمت یازدهم [آشنایی-با-request-body](آشنایی-با-request-body)
   - قسمت دوازدهم [آشنایی-با-request-body](آشنایی-با-request-body)
+  - قسمت سیزدهم [mime-type-|Context-Type](mime-type-|Context-Type)
 
 
 
@@ -3093,5 +3094,49 @@ export default function handler(req, res) {
 }
 
 ```
+
+---
+
+> # mime type|Context-Type
+
+تو این قسمت میخوایم content-type رو برسی کنیم  همونطور که میدونیم وقتی که ما توی بدنه درخواست اطلاعاتی که تو قسمت قبل داخل input ها رو گرفتیم مثلا name , age , family , email , password رو گرفتیم و به سمت سرور ارسال میکنیم تو قسمت headers از Content-Type استفاده کرده بودیم 
+
+```js
+const res = await fetch('http://localhost:3000/api/users',{
+        method : 'POST',
+        body : JSON.stringify(
+          {
+            name : 'reza',
+            family : 'bahrami',
+            email : 'rezabahrami@gamil.com',
+            password : '14445d',
+            age : 21,
+            gender : 'male'
+          }
+        ),
+        headers :{
+          'Content-Type' : 'application/json'    // <=
+        }
+      })
+    const data = await res.json()
+    console.log(data);
+```
+وقتی ما اون فرم ثبت نام جلسه قبل رو پرمیکنیم و روی دکمه send request کلیک میکنیم یه درخاست request از سمت client به سمت server فرستاده میشه و وقتی method POST باشه توی بدنه درخواست یه فایل JSON یک رشته جی سون رو داریم ارسال میکنیم که توسط JSON.stringify با این متد تبدیل به json کردیم از ابجکت جس اس تبدیل به ابجکت رشته جی سون تبدیل کردیم تبدیل به فرمت جی سون کردیم پس ما یه object json string رو ارسال کردیم به server .
+
+نوع این چیزی که ما داریم ارسال میکنیم یه فایل json هست پس ما تو headers مشخص کردیم که "Content-Type" :"application/json" هست یعنی نوع محتوایی که میخوایم ارسال کنیم چی هست؟ هالا اگه میخوایم بگیم مثلا json است باید از این فرمت "application/josn" استفاده کنیم هلا فرمت های دیگه ای هم داریم . هلا این فرمت ها از کجا میان . ما توی کامپیوتر وقتی میخوایم چیزی رو ذخیره کنیم خب اون فایل یه پسوند داره یه فرمت داره هلا میتونیم لیست اینا رو پیدا کنیم تو گوگل اگه سرچ کنیم common mime type یعنی mome type های رایج درواقع همون content-type هست .
+
+
+`پس وقتی ما داریم تو بدنه  درخواست که داریم به سمت سرور ارسال میکنیم باید نوع محتوای ارسالی یا content-type رو مشخص کنیم و برای اینکه مشخص کنیم این محتوایی که ما داریم ارسال میکنیم یک json هست تو قسمت headers باید بگیم این فرمت "Content-Type" : "application/json" است ` مثلا اگه یه فایل js بود یعنی میخواستیم بک فایل جاوااسکریپتی بفرستیم سمت بکند باید از فرمت "Content-Type" : "text/javascript"  استفده میکردیم اینطوری مینوشتیم .
+
+همونطور که یک سند html  قسمت <head> , <bod> داره که توی head یه سری اطلاعات درمورد این صفحه وب قرار میگیره توی body هم بدنه سایت اون عناصری که ما توی سایت میبینیم قرار میگیره هالا وقتی ما داریم یک request یا response ارسال میکنیم مثلا وقتی از سمت فرانت به سمت بکند داریم یه request ارسال میکنیم این درخاست که داره ارسال میشه یه قسمت headers داره و یه قسمت بدنه درخاست هست که توش اطلاعات رو بصورت متن جیسون داریم میفرستیم و تو headers میتونیم یه سری اطلاعات در مورد این requst که داریم ارسال میکنیم مشخص کنیم که ما داریم تو header مشخص میکنیم که نوع محتوای ارسالی چی هست .
+
+ما اومدیم از اون قسمت قبل که یه صفحه وب داشتیم که توش فرم داشتیم یه inspect میگیریم و وارد تب netword میشیم وقتی که یه request ارسال میکنیم مثلا فرم رو پرمیکنیم و روی دکمه میزنیم میتونیم توی تب network ببینمش الان req , res که فرستاده و دریافت میشه ردوبدل میشه میتونیم اینا رو ببینیم 
+
+<div align="center">
+  <img  src="./img/Content-Type-1.PNG">
+</div>
+<div align="center">
+  <img  src="./img/Content-Type-1.PNG">
+</div>
 
 ---
