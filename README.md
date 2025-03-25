@@ -3157,3 +3157,9 @@ const res = await fetch('http://localhost:3000/api/users',{
 # > ایجاد folder structure اولیه و ساخت دیتابیس
 
 تو این قسمت  folderstruter یک پروژه نکست بر پایه page roueter  رو نصب میکنیم اول  با دستور `npx create-next-app@latest` نکست رو نصب میکنیم و فولدر ها و فایل هایی اضافی رو حذف میکنیم مثل فایل .git و استایل های gloobal.css رو کلا داخلشو پاک میکنیم و...  بعد وارد mongoDB Compass میشیم و یه دیتابیس جدید ایجاد میکنیم مثلا به اسم next-phone و collection name رو که دسته بندی های داخل دیتابیسمون هست رو میزاریم contacts و بعد یه داکیومنت داخل این collection contacts ایجاد میکنیم با پراپرتی های name , family , age , gender , phone  پس داخل این کالکشن contacts یه داکیومنت با این پراپرتی ها ایجاد میکنیم 
+
+<div align="center">
+  <img  src="./img/install-nextjs-create-db.PNG">
+</div>
+
+---
