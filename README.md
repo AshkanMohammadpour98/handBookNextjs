@@ -55,6 +55,7 @@
  فصل چهارم :clipboard:
  - قسمت اول [معرفی-فصل](معرفی-فصل)
  - قسمت دوم [ایجاد-folder-structure-اولیه-و-ساخت-دیتابیس](ایجاد-folder-structure-اولیه-و-ساخت-دیتابیس)
+ - قسمت سوم [اصال-به-دیتابیس](اتصال-به-دیتابیس)
 
 
 
@@ -3161,5 +3162,45 @@ const res = await fetch('http://localhost:3000/api/users',{
 <div align="center">
   <img  src="./img/install-nextjs-create-db.PNG">
 </div>
+
+---
+
+> # اتصال به دیتابیس
+
+برای اتصال به دیتابیس نیاز داریم به یه پکیج `mongoose` که وارد سایت npmjs.com میشیم و اون رو سرچ میکنیم و داخل پروژه مون نصب میکنیم با کامند `npm i mongoose` این پکیج رو نصب میکنیم .
+
+تو قسمت قبل ما یه دیتابیس با mongoDB Campass به اسم next-db درست کردیم و یه دونه collaction به اسم contacts هم داخلش درست کردیم و داخلش یه داکیومنت درست کردیم هلا میخوایم بدونیم چطور ما تو nextjs میتونیم به این دیتابیس متصل باشیم برای اینکه با دیتابیس بتونیم ارتباط برقرار کنیم نیاز به یک connection داریم نیاز به یه اتصال داریم بعد از اینکه اتصال ما با دیتابیس برقرار شد هلا میتونیم کارهای مختلفی انجام بدیم  مثلا لیست همه مخاطب هایی که توی collection contacts هست رو از دیتابیس دریافت کنیم یا مثلا یه مخاطب جدید رو اضافه کنیم به این کالکشن contacts یا مخاطبی رو ویرایش کنیم یا مخاطبی رو حذف کنیم . پس برای اینکه بتونیم این کارها رو انجام بدیم که میشه عملیات CRUD رو انجام بدیم باید با اون دیتابیس connection اصالی دارشته باشیم .
+
+وارد فولدر pages , فولدر api و  دخلش یه فولدر جدید به اسم contacts و داخلش یه فایل index.js درست میکنیم هالا این کامپوننت رو مینویسیم روتش هم میشه localhost:3000/api/cantacts :
+
+```js
+//pages>api>catacts>index.js
+
+import mongoose from "mongoose";
+
+export default async function handler(req , res){
+    mongoose.connect('mongodb://localhost:27017/next-db/contact')       //=> uri/databaseName/collectionName
+    .then(()=> {console.log('conected database');
+    })
+    .catch((error)=>{console.log(error);
+    })
+
+    res.json({massage : 'conecte to db succesfully'})
+}
+```
+پس ما به req , res دسترسی داریم و این فانکشن میدونیم که باید async باشه و بصورت export default و  اسمش هم معمولا handler هست برای اتصال به دیتابیس mongodb هم که پکیج mongoose رو نصب کردیم اگه خاطرتون باشه گفتیم که کد های پوشه api که مینویسم سمت سرور اجرا میشن و اگه log هم بگیریم تو ترمینال دیده میشه .
+
+هلا این mongoose توش یه متد به اسم mongoose.connect() وجود داره که به عنوان ورودی باید بهش یه uri بهش بدیم که یه string باید باشه هلا اینو از کجا باید بیاریم از همون mongodb compass وقتی دیتابیس مون رو ایجاد کردیم یه uri داره اونو مینویسیم و /اسم دیتابیس که درست کردیم و/اسم کالکشن رو مینویسم . هلا این mongoose.connect یه پرامیس رو return میکنه هلا ما میتونیم از then , catch استفاده کنیم .
+
+
+اکه تو مرورگر روت localhost:3000/api/contact رو بزنیم 
+```js
+{massage : 'conecte to db succesfuly'}
+```
+
+و اگه وارد ترمینال بشیم اون log که گرفتیم اجرا میشه 
+```
+connected to database
+```
 
 ---
