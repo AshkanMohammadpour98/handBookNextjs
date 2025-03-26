@@ -3213,7 +3213,7 @@ connected to database
 
 
 <div align="center">
-  <img  src="./img/install-nextjs-create-db.PNG"> //مکان عکس پوشه
+  <img  src="./img/createModels.PNG"> 
 </div>
 
 ```js
@@ -3241,7 +3241,8 @@ const contactSchema = new schema({
 
 })
 
-const cotact = model('contact' , contactSchema)
+const Contact = model('contact' , contactSchema)
+export default Contact
 ```
 
 داخل این ما باید سه تا چیز رو از mongoose inport کنیم که model , models , schmea هستن از این پکیج گرفتیم بعا یه schema درست کردیم schema به معنی طرح ,الگو یه همچین چیزی هست ما باید بیاییم طرح و الگو و ساختار این داکیومنت هایی که قرار داخل کالکشن contacts ثبت بشن رو مشخص کنیم با درست کردن schema  هلا مثلا گفتیم که هر کدوم از داکیومنت ها پراپرتی name داشته باشه و نوع اون رشته باشه یعنی توی این name باید چه نوعی ذخیره بشه `البته جلوتر به یه ارور میخوریم که بعدا برسیش میکنیم `
