@@ -57,6 +57,7 @@
  - قسمت دوم [ایجاد-folder-structure-اولیه-و-ساخت-دیتابیس](ایجاد-folder-structure-اولیه-و-ساخت-دیتابیس)
  - قسمت سوم [اصال-به-دیتابیس](اتصال-به-دیتابیس)
  - قسمت چهارم [ساخت-Model](ساخت-Model)
+ - قسمت پنجم [get-all-contacts-api](get-all-contacts-api)
 
 
 
@@ -3247,3 +3248,95 @@ export default Contact
 
 داخل این ما باید سه تا چیز رو از mongoose inport کنیم که model , models , schmea هستن از این پکیج گرفتیم بعا یه schema درست کردیم schema به معنی طرح ,الگو یه همچین چیزی هست ما باید بیاییم طرح و الگو و ساختار این داکیومنت هایی که قرار داخل کالکشن contacts ثبت بشن رو مشخص کنیم با درست کردن schema  هلا مثلا گفتیم که هر کدوم از داکیومنت ها پراپرتی name داشته باشه و نوع اون رشته باشه یعنی توی این name باید چه نوعی ذخیره بشه `البته جلوتر به یه ارور میخوریم که بعدا برسیش میکنیم `
 
+---
+
+> # get all contacts api
+
+تو قسمت قبل modle مون رو ایجاد کردیم . میخوایم تو این قسمت یه api توسعه بدیم که اگه کاربر وارد روت localhost:3000/api/contacts شد یا درخواستی به این روت فرستاد به دیتابیس متصل بشیم اطلاعات contact هارو بگیریم و درقالب json به کاربر نمایش بدیم مثل وب سایت jsonplaceholder که اگه مثلا وارد روت https://jsonplaceholder.typicode.com/users/ بشیم یه ارایه هست که شامل چندین ابجکت هست که هر ابجکت اطلاعات یوزر هست . ما هم میخوایم وقتی وارد روت localhost:3000/api/contacts بشیم یه ارایه که شامل چند تا contact باشه رو بببینیم که از دیتابیس این اطلاعات گرفته میشن ما تو دیتابیس next-db مون یه کالکشن به اسم contacts داریم که داخلش دوتا داکیومنت داریم .
+
+وارد فایل pages>api>contacts>index.js میشیم
+
+```js
+//pages>api>contact>index.js
+
+import Contact from "@/models/contact";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   mongoose
+      .connect("mongodb://localhost:27017/next-db")
+      .then(() => console.log("connect to db successfully"))
+      .catch((error) => console.log(error))
+
+   if (req.method == "GET") {
+      const contacts = await Contact.find()      
+      res.json(contacts)
+   }
+}
+
+```
+چون عملیاتی که ما توی دیتابیس انجام میدم الان ما میخوایم لیست این contact ها رو دریافت کنیم دیگه پس عملیات scync هست پس باید از await استفاده کنیم حتما
+یه شرط گزاشتیم گفتیم که اگه درخاست از نوع GET بود . ما برای اینکه به اون کالکشن توی دیتابیسمون دسترسی داشته باشیم نیاز داریم به اون modle که تو جلسه قبل ساختیم پس داخل شرط مون از اون model استفاده کردیم اون رو import کردیم هالا توسط این میتونیم به دیتابیس دسترسی داشته باشیم هلا میتونیم از متد find() استفاده کنیم . کار این متد چی بود؟ اگه خاطرتون باشه تو mongodbCampass محیط mongoshel ما میتونستیم بگیم بیا تو این کالکشن با کامند `()db.contacts.find` هالا چند نوع find داشتیم  هالا اگه از این find استفاده میکردیم و چیزی توش نمینوشتیم یعنی ورودی بهش ندیم یه اگه یه ابجکت خالی بهش بدیم `({})db.contacts.find` در هر دوحالت میاد کل داکیومنت هایی که توی کالکشن contacts هست رو بهمون میده هلا اینجام که از find استفاده کردیم دقیقن همینه وقتی میگیم contact.find() توسط این model میاد و با این کالکشن contacts که تو دیتابیس داریم ارتباط برقرار میکنه و توسط متد find هم میاد کل داکیومنت های داخلش رو برمیگردونه و داخل متغیری که نوشتیم ذخیره میکنه
+
+هلا نکته اینجاست  وقتی ما میاییم وارد روت localhost:3000/api/contacts  میشیم یه درخواست میره به این روت  و کد های دخل این if  که بالا نوشتیم اجرا میشن که یه ارور میبینیم همون ارور که جلسه قبل گفتیم بهش برمیخوریم که  اسم ارور `OverwriteModelError` است 
+
+
+<div align="center">
+  <img  src="./img/get-all-contacts-api.PNG"> 
+</div>
+
+برای رفع این ارور تو فایل models>contacts.js رو که جلسه قبل نوشته بودیم رو اینطوری باید بنویسیم
+
+```js
+//models>contacts.js
+
+import { models , model , Schema } from "mongoose";
+
+const contactSchema = new Schema({
+    name : {
+        type : String
+    },
+    family : {
+        type : String
+    },
+    age :{
+        type : Number
+    },
+    phone : {
+        type : String
+    },
+    gender : {
+        type : String
+    }
+
+})
+
+const Contact = models.contact || model('contact' , contactSchema)
+export default Contact
+```
+این ارور مربوط به اینه که سعی میکرد بیاد یه بار دیگه این مدل رو ایجاد کنه الان با این تغیری که توش دادیم وقتی بار اول این مدل میخواد ایجاد بشه `model('contact' , contactSchema)` این قسمت اجرا میشه و از اون به بعد دیگه چون قبلا ایجاد شده این مدل دیگه نمیاد دباره بسازه این مدلو که به ارور بخوریم از همون استفاده میکنه 
+هلا اگه وارد روت localhost:3000/api/contacts بشیم 
+```js
+[
+{
+_id: "67e40a3853f4c4bc6e7e65de",
+name: "milad",
+family: "bahrami",
+age: 28,
+gender: "male",
+phone: "09302555547"
+},
+{
+_id: "67e519f64faa0558f389156e",
+name: "ali",
+family: "bahrami",
+age: 99,
+gender: "male",
+phone: "09015552841"
+}
+]
+```
+
+تو قسمت بعد میریم و این کدا رو بهینه میکنیم هلا این کدا های نابهینه چی هستن . هربار که ما بخواییم وارد روت localhost:/api/contacts بشیم هر بار میاد و این کدهای mongoose.connect و اون if  اجرا میشن و یه بار دیگه مجدد به دیتابیس متصل میشه که این کار درستی نیست ما یکبار نیاز هست به دیتابیس متصل بشیم یه ارتباط برقرار کنیم و برای دفعات دیگه نیاز نیست از اول بیاییم دباره به اون دیتابیس متصل شیم و... یعنی به اضای هر request که ما به این روت میزنیم دباره به دیتابیس متصل میشه و ... که این کار بهینه ای نیست . 
+
+---
