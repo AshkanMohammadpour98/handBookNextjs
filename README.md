@@ -3386,3 +3386,44 @@ export default async function handler(req, res) {
 هلا میخوایم یکی از داکیونت هارو بر اساس ایدی بگیریم مثلا فقط اطلاعات یکی از contacts ها رو میخوایم بگیریم مثلا localhost:3000/api/contacts/id بیاد دقیفن فقط اطلاعات این ایدی که بهش دادیم رو بهمون بده فقط اون پس نیاز داریم به یک روت dynamic توی فولدر api
 
 
+<div align="center">
+  <img  src="./img/get-single-contact.PNG"> 
+</div>
+
+وقتی روت داینامیک میخواستیم اسم فایل رو داخل [] میزاشتیم که ما اسمشو[id_] گزاشتسم همنام با اون فیلد id_ که تو داکیومنت هرکدوم از مخاطب ها هست تو دیتابیس. 
+
+```js
+//pages>api>contacts>[_id]
+
+import Contact from "@/models/contact";
+import mongoose from "mongoose";
+
+export default async function handler(req , res){
+    mongoose.connect('mongodb://localhost:27017/next-db')
+    .then(()=>{
+        if(mongoose.connections[0].readyState){
+            return
+            console.log('get contacts to database successfully');
+            
+        }
+    })
+    .catch((error)=>{console.log(error);
+    })
+
+    if(req.method == 'GET'){
+        const {_id} = req.query
+        const contact = await Contact.findById(_id)
+        res.json(contact)
+    }
+}
+```
+الان روت این فایل میشه localhost:3000/api/contacts/[_id]  که باید ایدی کاربر یا مخاطب قرار بگیره که وقتی request بفرستیم مشخصات همون کاربر برامون میاد کاری که کردیم دباره اتصال به دیتابیس رو انجام دادیم که توی .then چک کردیم که اگه از قبل به دیتابیس متصل بودیم که هیچ متصل هستیم و اگه متصل نبودیم اصال اتفاق بیفته هلا توی if اگه خاطرتون باشه تو mongoshell اگه میخواستیم یکی از داکیومنت هارو بگیریم از کامند 
+`db.contacts.findOne({ _id : objectId('67e40a3853f4c4bc6e7e65de') )`
+الان دقیقن همون رو بهمون تحویل میده البته خود mongoose که متدی بهمون میده که مشابه با این findOne() ولی اسمش فرق میکنه و سینتکس ساده تری داره که findById() هست و بهش id رو دادیم هالا این ایدی از کجا میاد؟ خب اینو قبلا برسی کردیم که اون پارامترهای داینامیکمون توی روت تو req.puery بهش دسترسی داریم 	
+
+
+الان ما یه ایدی اگه بدیم از داکیومنت مون یه ایدی برداریم بدیم به این روت localhost:3000/api/contacts/67e40a3853f4c4bc6e7e65de  اون داکیومنت که این اید رو داره رو بهمون بصورت جی سون اطلاعاتشو میده .
+
+تو قسمت بعد برسی میکنیم که اگه ایدی که وارد شده وجود نداشت یا معتبر نیود پاسخ مناسبی به کاربر بدیم که بگیم ایدی مشکل داره 
+
+---
