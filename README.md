@@ -60,6 +60,7 @@
  - قسمت پنجم [get-all-contacts-api](get-all-contacts-api)
  - قسمت ششم [بهینه-تر-کردن-کد-اتصال-به-دیتابیس](بهینه-تر-کردن-کد-اتصال-به-دیتابیس)
  - قسمت هفتم [get-single-contact-api](get-single-contact-api)
+ - قسمت هشتم [اعتبارسنجی-object-ID](اعتبارسنجی-object-ID)
 
 
 
@@ -3425,5 +3426,83 @@ export default async function handler(req , res){
 الان ما یه ایدی اگه بدیم از داکیومنت مون یه ایدی برداریم بدیم به این روت localhost:3000/api/contacts/67e40a3853f4c4bc6e7e65de  اون داکیومنت که این اید رو داره رو بهمون بصورت جی سون اطلاعاتشو میده .
 
 تو قسمت بعد برسی میکنیم که اگه ایدی که وارد شده وجود نداشت یا معتبر نیود پاسخ مناسبی به کاربر بدیم که بگیم ایدی مشکل داره 
+
+---
+
+> # اعتبارسنجی-object-ID
+
+همنوطور که برسی کردیم اگر ما بیاییم تو روت localhost:3000/api/contacts بشیم contact هایی که تو کالکشن contacts وجود دارن تو دیتابیس next-bd وجود دارن همه دریافت میشن و درقالب josn با این فرمت تحویلمون داده میشن هلا ما میخواییم یکی از داکیومنت ها رو بر اساس id انتخاب کنیم که تو قسمت قبل اینو درست کردیم ولی اگه تو ایدی که دادیم یه حرف یا چیزی اضافه یا کم کنیم یا این ایدی وجود داشته تو دیتابیس ولی بصورت دستی خودمون از mongodb اون رو حذف کنیم میگه not found و اگه به اون ایدی چیزی اضافه یا کم کنیم هم ارور میگیریم که نباید این اتفاق بیفته و ما اگر ایدی مون نانعتبر باشه باید یک پیغام مناسب از سمت سرور به سمت کلاینت ارسال کنیم.
+
+توسط متد isValidObjectId که از mongoose هم import میشه 
+
+```js
+//pages>api>contacts>[_id].js
+
+import Contact from "@/models/contact";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    mongoose.connect('mongodb://localhost:27017/next-db')
+    .then(()=>{
+        if(mongoose.connections[0].readyState){
+            return
+            console.log('get contacts to database successfully');
+            
+        }
+    })
+    .catch((error)=>{console.log(error);
+    })
+
+    if(req.method == 'GET'){
+        const {_id} = req.query
+
+        if(isValidObjectId(_id)){
+            const contact = await Contact.findById(_id)
+            res.json(contact)
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+    }
+}
+
+```
+
+فرض کنین که ما سه تا داکیومنت تو کالکشن contacts داریم هالا میاییم سومی رو حذف میکنیم بصورت دستی تو دیتابیس mongodb هلا وقتی مثلا به روت localhost:3000/api/contacts/67e519f64faa0558f389156e میریم دیگه اون سومی رو حذف کردیم بصورت دستی و دیگه نیست تو دیتابیس ایدی معتبره مثل قبل نیست که با متد isValidObjectId برسی کنه که معتبر هست یا نه معتبره ولی چون دیگه موجود نیست تو دیتابیس next-db تو این حالت تو مرورگر این ادرس رو null میده هلا این حالت رو میتونیم با یه شرط هندل کنیم که یک پیغام مناسب رو بدیم باید بگیم که همچین ایدی وجود داره یا نه تو یه if و اگه وجود داره بعد بره if بعدی که چک کنه معتبره این ایدی یا نه تو این حالت اگه بصورت دستی هم حذف کنیم تو mongodb و به این روت درخاست بزنیم معتبر هست ولی چون حذف کردیم موجود نیست 
+```js
+//pages>api>contacts/[_id].js
+import Contact from "@/models/contact";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    mongoose.connect('mongodb://localhost:27017/next-db')
+    .then(()=>{
+        if(mongoose.connections[0].readyState){
+            return
+            console.log('get contacts to database successfully');
+            
+        }
+    })
+    .catch((error)=>{console.log(error);
+    })
+
+    if(req.method == 'GET'){
+        const {_id} = req.query
+
+        if(isValidObjectId(_id)){
+            const contact = await Contact.findById(_id)
+            if(contact){
+
+                res.json(contact)
+            }else{
+                res.json({message : 'objectId not found'})
+            }
+            
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+    }
+}
+
+```
 
 ---
