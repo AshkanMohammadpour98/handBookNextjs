@@ -61,6 +61,7 @@
  - قسمت ششم [بهینه-تر-کردن-کد-اتصال-به-دیتابیس](بهینه-تر-کردن-کد-اتصال-به-دیتابیس)
  - قسمت هفتم [get-single-contact-api](get-single-contact-api)
  - قسمت هشتم [اعتبارسنجی-object-ID](اعتبارسنجی-object-ID)
+ - قسمت نهم [بهینه-کردن-کد-اتصال-به-دیتابیس](بهینه-کردن-کد-اتصال-به-دیتابیس)
 
 
 
@@ -3505,4 +3506,177 @@ export default async function handler(req , res){
 
 ```
 
+تو قسمت بعدی یکم کد رو بهینه تر میکنیم چون ما تو فایل api>contacts>index.js و api>contacts>[_id].js اون قسمت که داریم به دیتابیس next-db متصل میشیم تکراری هست و این کد تکراری هست و تو قسمت بعد بهنیه ترش میکنیم.
+
+---
+
+> # بهینه تر کردن کد اتصال به دیتابیس
+
+میخوایم کدهای قسمت اتصال به دیتابیس که نوشتیم که تو دوجا تو دو فایل اتصال به دیتابیس رو استفاده کردیم رو بهینه سازی کنیم یعنی دوجا از اتصال به دیتابیس استفاده کنیم هلا میخاییم یه فانکشن بنویسم که اینکارو کنه و تو هردو فایل ازش استفاده کنیم یعنی یکبار به دیتابیس متصل شیم و اونو تو دو فایل استفاده کنیم ما تو فایل api>contacts>index.js و api>contacts>[_id].js اون قسمت که داریم به دیتابیس next-db متصل میشیم تکراری هست و این کد تکراری هست 
+
+```js
+
+    mongoose.connect('mongodb://localhost:27017/next-db')
+    .then(()=>{
+        if(mongoose.connections[0].readyState){
+            return
+            console.log('get contacts to database successfully');
+            
+        }
+    })
+    .catch((error)=>{console.log(error);
+    })
+```
+قطعه کد بالا تو دوتا فایل وجود دارد و ما تو برنامه نویسی یه اصتلاح داریم به اسم DRY (Don't repeat yourself) این اصل داره یه این موضوع اشاره میکنه که هر جا یه قطعه کدی داره تکرار میشه ما باید به این فکر کنیم که چطوری میشه جلوی تکرار یه تکه کد که چندین جا داره استفاده میشه رو بگیریم  
+پس ما این تکه کد بالا رو تو دوتا فایل داریم 
+
+
+```js
+//pages>api>contacts/[_id].js
+import Contact from "@/models/contact";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    mongoose.connect('mongodb://localhost:27017/next-db')
+    .then(()=>{
+        if(mongoose.connections[0].readyState){
+            return
+            console.log('get contacts to database successfully');
+            
+        }
+    })
+    .catch((error)=>{console.log(error);
+    })
+
+    if(req.method == 'GET'){
+        const {_id} = req.query
+
+        if(isValidObjectId(_id)){
+            const contact = await Contact.findById(_id)
+            if(contact){
+
+                res.json(contact)
+            }else{
+                res.json({message : 'objectId not found'})
+            }
+            
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+    }
+}
+
+```
+و همچنین فایل 
+```js
+//pages>api>contacts>index.js
+
+import Contact from "@/models/contact";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   mongoose
+      .connect("mongodb://localhost:27017/next-db")
+      .then(() => {
+         if(mongoose.connections[0].readyState){
+            return
+            console.log("connect to db successfully")
+         }
+      })
+      .catch((error) => console.log(error))
+
+   if (req.method == "GET") {
+      const contacts = await Contact.find()      
+      res.json(contacts)
+   }
+}
+```
+همونطور که میبینین این تکیه کد در هر دوفایل مشابه هست و یک کاری رو میکنه و داریم از اصل DRY سرپیجی میکنیم هلا میتونیم یه کاری کنیم که این تیکه کد رو تبدیل به یک function کنیم و تو هردوفایل اون فانکشن رو صدا بزنیم 
+
+<div align="center">
+  <img  src="./img/refactorDB.PNG"> 
+</div>
+
+میاییم خارج از هرگونه فولدری . خودمون یه فولدر با اسم utils ایجاد میکنیم  داخل این فولدر utils ما مثلا اگه یک فانکشن داشته باشیم که قرار چند جای مختلف تو پروژه مون استفاده بشه میاییم توی این فولدر utils اون رو تعریف میکنیم. داخل فولدر utils یه فایل به اسم connectDB.js درست میکنیم  که البته یه سری تغیراتی هم داردیم از try , catch برای هندلینگ ارور ها استفاده کردیم و چون عملیات ازتباط و اتصال به دیتابیس یه عملیات زمانبر هست از async , await استفاده کردیم
+
+```js
+//utils>connectDB
+export default async function connectDB(){
+   try {
+    if(mongoose.connections[0].readyState) return
+    await mongoose.connect("mongodb://localhost:27017/next-db")
+    console.log("connect to db successfully")
+    
+   } catch (error) {
+    console.log('connection faild');
+    
+   }
+
+}
+```
+هلا تو فایل pages>api>contacts>index.js اینطوری مینویسیم فقط این فانکشن connectDB رو صدا میزنیم بجای  تکه کد ارتباط با دیتا بیس
+```js
+//pages>api>contacts>index.js
+
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   // mongoose
+   //    .connect("mongodb://localhost:27017/next-db")
+   //    .then(() => {
+   //       if(mongoose.connections[0].readyState){
+   //          return
+   //          console.log("connect to db successfully")
+   //       }
+   //    })
+   //    .catch((error) => console.log(error))
+   connectDB()
+
+   if (req.method == "GET") {
+      const contacts = await Contact.find()      
+      res.json(contacts)
+   }
+}
+```
+و همچنین داخل فایل pages>api>contacts>[_id].js 
+```js
+//pages>api>contacts>[_id].js
+
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    // mongoose.connect('mongodb://localhost:27017/next-db')
+    // .then(()=>{
+    //     if(mongoose.connections[0].readyState){
+    //         return
+    //         console.log('get contacts to database successfully');
+    //         
+    //     }
+    // })
+    // .catch((error)=>{console.log(error);
+    // })
+    connectDB()
+
+    if(req.method == 'GET'){
+        const {_id} = req.query
+
+        if(isValidObjectId(_id)){
+            const contact = await Contact.findById(_id)
+            if(contact){
+
+                res.json(contact)
+            }else{
+                res.json({message : 'objectId not found'})
+            }
+            
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+    }
+}
+```
 ---
