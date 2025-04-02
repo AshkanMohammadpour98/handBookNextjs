@@ -63,6 +63,7 @@
  - قسمت هشتم [اعتبارسنجی-object-ID](اعتبارسنجی-object-ID)
  - قسمت نهم [بهینه-کردن-کد-اتصال-به-دیتابیس](بهینه-کردن-کد-اتصال-به-دیتابیس)
  - قسمت دهم [نصب-postman-و-کاربرد-postman-چیه؟](نصب-postman-و-کاربرد-postman-چیه؟)
+ - قسمت یازدهم [توسعه-قابلیت-اضافه-کردن-مخاطب-جدید](توسعه-قابلیت-اضافه-کردن-مخاطب-جدید)
 
 
 
@@ -3708,3 +3709,62 @@ export default async function handler(req , res){
  این postman هم یه جور client هست برای ارسال درخاست به سمت سرور که خیلی راحت میتونیم انواع request ها رو با انواع method ارسال کنیم به سمت سرور `درواقع وقتی داریم یه api رو توسعه میدیم وقتی برنامه نویسای بکند یه api رو توسعه میدن میان توی postman اون api رو که توسعه دادن رو تست میکنن با متد های مختلف حینی که دارن api  رو توسعه میدن و میان اینجا تست رو میگیرن` هلا ما بعدن این api مون رو برای method های دیگه مثل POST,... هم توسعه میدیم و میاییم تو postman اون رو تست میکنیم.
  
  ---
+
+# > توسعه قابلیت اضافه کردن مخاطب جدید
+
+ میخوایم یه contact جدید به دیتابیس مون اضافه کنیم مثلا یه فرم داریم که اطلاعات رو میگیره و وقتی رو دکمه add contact کلیک کردیم این اطلاعات که داخل فرم است رو که تو req.body ذخیره میشه رو بگیریم و اضافه کنیم به دیتابیس یعنی req که از سمت مروگر ارسال میشه به سمت سرور باید تو بدنه ی درخاست که بهش request body میگیم توی بدنه درخاست باید اون اطلاعات رو درقالب یک {} تو بدنه درخاست از سمت کلاینت به سمت سرور ارسال کنیم بعد اطاعات تو سرور ثبت بشن و یه response یا پاسخ مناسبی هم به سمت مرورگر اسال بشه که متوجه بشیم کاربر با موفقیت اطلاعاتش ثبت شده یا نشده .
+
+ <div align="center">
+  <img  src="./img/add-new-contact-1.PNG"> 
+</div>
+
+این فرایند کلی هست که باید انجام بدیم ما چون داریم api رو توسعه میدیم نمیاییم یه صفحه ثبت نام درست کنیم یه یه فرم باشه با یه سری impout چون داریم api رو توسعه میدیم برای تست از postman استفاده میکنیم که هم کار با این برنامه رو هم بهتر یاد بگیریم اون کدهای بکند رو هم تو فایل api>contacts>index.js که میشه روت localhost:3000/api/contacts میبنویسیم.
+
+
+```js
+//pages>api>contacts.js
+
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   // mongoose
+   //    .connect("mongodb://localhost:27017/next-db")
+   //    .then(() => {
+   //       if(mongoose.connections[0].readyState){
+   //          return
+   //          console.log("connect to db successfully")
+   //       }
+   //    })
+   //    .catch((error) => console.log(error))
+   await connectDB()
+
+   if (req.method == "GET") {
+      const contacts = await Contact.find()      
+      res.json(contacts)
+   }
+   else if(req.method == "POST"){
+      
+      await Contact.create(req.body)
+      res.status(201).json({message : 'new contact added to db'})
+      
+   }
+}
+```
+ما قبلا فقط یه method رو مشخص کرده بودیم که اگر درخاستی از نوع GET ارسال بشه چه اتفاقی بیفته  میره و همه contact ها رو که توی کالکشن contacts هستن رو درقالب json برمیگردونه ولی الان بخش POST رو نوشتیم اگه خاطرتون باشه ما تو mongodb تو mongosh وقتی میخواستیم یه documet جدید به کالکشن مون اضافه کنیم از کامند `db.contacts.insertOne()` استفاده میکردیم ولی میتونیم از یه متد متفاوت با یه اسم دیگه استفاده کنیم به اسم .create() 
+
+
+ <div align="center">
+  <img  src="./img/add-new-contact-2.PNG"> 
+</div>
+فرض کنین این nama, family,... که تو request body نوشتیم داخل postman همون فرم ثبت نام هست که اطلاعات کاربرو گرفتیم هست 
+
+الان اگه بریم تو mongodbcompass و دیتابیس مون رو نگاه کنیم کالشکن contacts رو میبینیم که این خاطب که تو postman نوشتیم  اضافه شده 
+ <div align="center">
+  <img  src="./img/add-new-contact-3.PNG"> 
+</div>
+
+ولی کاری که تو قسمت بعد میکنیم برسی کردن اطلاعاتی که ذخیره میشن مثلا ممکنه کاربر شماره رو ننویسه یا اسمشو ننویسه که ما باید validate اعتبار سنجی کنیم اطلاعات رو 
+
+---
