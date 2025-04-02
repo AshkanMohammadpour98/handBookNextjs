@@ -3633,7 +3633,8 @@ export default async function handler(req, res) {
    //       }
    //    })
    //    .catch((error) => console.log(error))
-   connectDB()
+
+   await connectDB()
 
    if (req.method == "GET") {
       const contacts = await Contact.find()      
@@ -3660,7 +3661,8 @@ export default async function handler(req , res){
     // })
     // .catch((error)=>{console.log(error);
     // })
-    connectDB()
+
+    await connectDB()
 
     if(req.method == 'GET'){
         const {_id} = req.query
