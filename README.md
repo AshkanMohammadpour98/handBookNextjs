@@ -64,6 +64,7 @@
  - قسمت نهم [بهینه-کردن-کد-اتصال-به-دیتابیس](بهینه-کردن-کد-اتصال-به-دیتابیس)
  - قسمت دهم [نصب-postman-و-کاربرد-postman-چیه؟](نصب-postman-و-کاربرد-postman-چیه؟)
  - قسمت یازدهم [توسعه-قابلیت-اضافه-کردن-مخاطب-جدید](توسعه-قابلیت-اضافه-کردن-مخاطب-جدید)
+ - قسمت دوازدهم [توسعه-قابلیت-حذف-کردن-مخاطب](توسعه-قابلیت-حذف-کردن-مخاطب)
 
 
 
@@ -3766,5 +3767,70 @@ export default async function handler(req, res) {
 </div>
 
 ولی کاری که تو قسمت بعد میکنیم برسی کردن اطلاعاتی که ذخیره میشن مثلا ممکنه کاربر شماره رو ننویسه یا اسمشو ننویسه که ما باید validate اعتبار سنجی کنیم اطلاعات رو 
+
+---
+
+> # توسعه قابلیت حذف کردن مخاطب
+
+یکی دیگه از قابلیت های دیگه که باید برنامه ما داشته باشه بتونیم مخاطب ها رو یا همون داکیومنت ها رو بتونیم از کالشن contacts که تو دیتابیس next-db هست رو بتونیم حذف کنیم میخواییم اینو به api مون اضافه کنیم .
+
+خب برای اینکه بتونیم یک مخاطب از مخاطب ها رو حذف کنیم باید یه درخاست بزنیم به ایدی اون مثلا localhost:3000/api/ContactID یعنی باید بریم داخل روت داینامیکی که تو فولدر API درست کرده بودیم  کد بنویسیم همونطور که وقتی میخواستیم فقط یک مخاطب رو بببینم هم براش نوشتیم که با متد GET بود هلا میخوایم برای حذف هم به api مون یه فیچر حذف کردن هم اضافه کنیم 
+
+خب اول داکیومنت هایی که داریم مخاطب هایی که داریم رو یه نگا بندازیم که چندتا مخاطب داریم تو دیتابیس
+
+ <div align="center">
+  <img  src="./img/add-futcher-delet-1.PNG"> 
+</div>
+
+وارد فایل pages>api>contacts>[_id].js  میشیم و یه سری تغیراتی میدیم و از متد findByIdAndDelete(_id) استفاده میکنیم
+
+```js
+//pages>api>contacts>[_id].js
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    // mongoose.connect('mongodb://localhost:27017/next-db')
+    // .then(()=>{
+    //     if(mongoose.connections[0].readyState){
+    //         return
+    //         console.log('get contacts to database successfully');
+    //         
+    //     }
+    // })
+    // .catch((error)=>{console.log(error);
+    // })
+    await connectDB()
+    const {_id} = req.query
+
+    
+    if(isValidObjectId(_id)){
+            if(req.method == 'GET'){
+            const contact = await Contact.findById(_id)
+            if(contact){
+
+                res.json(contact)
+            }else{
+                res.json({message : 'objectId not found'})
+            }
+        }else if(req.method == 'DELETE'){
+            await Contact.findByIdAndDelete(_id)
+            res.json({message : "contact deleted successfully"})
+        }
+            
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+}
+```
+تغیراتی که داریم اون تعیرف {id_} رو بردیم بلا که بتونیم تو هر دو اسکوپ های شرطهای GET , DELETE بتونیم بهش دسترسی داشته باشیم در هردوجا چون نیازش داریم و همچنین جای شرط های شرط اعتبار سنجی ایدی که isValidObjectId هست رو بردیم بالاتر از شرط "req.method == "GET چوی برای هردو نیاز داریم اعتبار سنجی درست بودن ایدی که وارد میشه رو نیاز داریم برای هردو و درنهایت برای حذف کردن این ایدی که وارد میشه از متد .findByIdAndDelete(_id) استفاده کردیم
+
+ <div align="center">
+  <img  src="./img/add-futcher-delet-2.PNG"> 
+</div>
+ <div align="center">
+  <img  src="./img/add-futcher-delet-3.PNG"> 
+</div>
 
 ---
