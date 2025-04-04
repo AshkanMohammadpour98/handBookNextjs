@@ -3440,7 +3440,7 @@ export default async function handler(req , res){
 توسط متد isValidObjectId که از mongoose هم import میشه 
 
 ```js
-//pages>api>contacts>[_id].js
+//	pages>api>contacts>[_id].js
 
 import Contact from "@/models/contact";
 import mongoose, { isValidObjectId } from "mongoose";
@@ -3473,7 +3473,7 @@ export default async function handler(req , res){
 
 فرض کنین که ما سه تا داکیومنت تو کالکشن contacts داریم هالا میاییم سومی رو حذف میکنیم بصورت دستی تو دیتابیس mongodb هلا وقتی مثلا به روت localhost:3000/api/contacts/67e519f64faa0558f389156e میریم دیگه اون سومی رو حذف کردیم بصورت دستی و دیگه نیست تو دیتابیس ایدی معتبره مثل قبل نیست که با متد isValidObjectId برسی کنه که معتبر هست یا نه معتبره ولی چون دیگه موجود نیست تو دیتابیس next-db تو این حالت تو مرورگر این ادرس رو null میده هلا این حالت رو میتونیم با یه شرط هندل کنیم که یک پیغام مناسب رو بدیم باید بگیم که همچین ایدی وجود داره یا نه تو یه if و اگه وجود داره بعد بره if بعدی که چک کنه معتبره این ایدی یا نه تو این حالت اگه بصورت دستی هم حذف کنیم تو mongodb و به این روت درخاست بزنیم معتبر هست ولی چون حذف کردیم موجود نیست 
 ```js
-//pages>api>contacts/[_id].js
+//	pages>api>contacts/[_id].js
 import Contact from "@/models/contact";
 import mongoose, { isValidObjectId } from "mongoose";
 
@@ -3535,7 +3535,7 @@ export default async function handler(req , res){
 
 
 ```js
-//pages>api>contacts/[_id].js
+//	pages>api>contacts/[_id].js
 import Contact from "@/models/contact";
 import mongoose, { isValidObjectId } from "mongoose";
 
@@ -3572,7 +3572,7 @@ export default async function handler(req , res){
 ```
 و همچنین فایل 
 ```js
-//pages>api>contacts>index.js
+//	pages>api>contacts>index.js
 
 import Contact from "@/models/contact";
 import mongoose from "mongoose";
@@ -3603,7 +3603,7 @@ export default async function handler(req, res) {
 میاییم خارج از هرگونه فولدری . خودمون یه فولدر با اسم utils ایجاد میکنیم  داخل این فولدر utils ما مثلا اگه یک فانکشن داشته باشیم که قرار چند جای مختلف تو پروژه مون استفاده بشه میاییم توی این فولدر utils اون رو تعریف میکنیم. داخل فولدر utils یه فایل به اسم connectDB.js درست میکنیم  که البته یه سری تغیراتی هم داردیم از try , catch برای هندلینگ ارور ها استفاده کردیم و چون عملیات ازتباط و اتصال به دیتابیس یه عملیات زمانبر هست از async , await استفاده کردیم
 
 ```js
-//utils>connectDB
+//	utils>connectDB
 export default async function connectDB(){
    try {
     if(mongoose.connections[0].readyState) return
@@ -3619,7 +3619,7 @@ export default async function connectDB(){
 ```
 هلا تو فایل pages>api>contacts>index.js اینطوری مینویسیم فقط این فانکشن connectDB رو صدا میزنیم بجای  تکه کد ارتباط با دیتا بیس
 ```js
-//pages>api>contacts>index.js
+//	pages>api>contacts>index.js
 
 import Contact from "@/models/contact";
 import connectDB from "@/utils/connectDB";
@@ -3646,7 +3646,7 @@ export default async function handler(req, res) {
 ```
 و همچنین داخل فایل pages>api>contacts>[_id].js 
 ```js
-//pages>api>contacts>[_id].js
+//	pages>api>contacts>[_id].js
 
 import Contact from "@/models/contact";
 import connectDB from "@/utils/connectDB";
@@ -3723,7 +3723,7 @@ export default async function handler(req , res){
 
 
 ```js
-//pages>api>contacts.js
+//	pages>api>contacts.js
 
 import Contact from "@/models/contact";
 import connectDB from "@/utils/connectDB";
@@ -3785,7 +3785,7 @@ export default async function handler(req, res) {
 وارد فایل pages>api>contacts>[_id].js  میشیم و یه سری تغیراتی میدیم و از متد findByIdAndDelete(_id) استفاده میکنیم
 
 ```js
-//pages>api>contacts>[_id].js
+//	pages>api>contacts>[_id].js
 import Contact from "@/models/contact";
 import connectDB from "@/utils/connectDB";
 import mongoose, { isValidObjectId } from "mongoose";
@@ -3833,4 +3833,75 @@ export default async function handler(req , res){
   <img  src="./img/add-futcher-delet-3.PNG"> 
 </div>
 
+
+هلا مشکلی که ما الان داریم یه جور باگی که داریم اینه که فرض کنین ما تو postman یه درخاست متد delete میزنیم به ادرسمون با یه ایدی اون ایدی اون contact حذف میشه و `res.json({message : "contact deleted successfully"})` روهم برمیگردونه هالا اگه دباره یه درخاست با متد delete بزنیم به همون ایدی باز هم اون `res.json({message : "contact deleted successfully"})` رو بهمون برمیگردونه درحالی که باید بگه این ایدی وجود نداره چون ما اینو حذف کردیم 
+
+
+```js
+//	pages>api>contacts>[_id].js
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    // mongoose.connect('mongodb://localhost:27017/next-db')
+    // .then(()=>{
+    //     if(mongoose.connections[0].readyState){
+    //         return
+    //         console.log('get contacts to database successfully');
+    //         
+    //     }
+    // })
+    // .catch((error)=>{console.log(error);
+    // })
+    await connectDB()
+    const {_id} = req.query
+
+    
+    if(isValidObjectId(_id)){
+            if(req.method == 'GET'){
+            const contact = await Contact.findById(_id)
+            if(contact){
+
+                res.json(contact)
+            }else{
+                res.json({message : 'objectId not found'})
+            }
+        }else if(req.method == 'DELETE'){
+            const result = await Contact.findByIdAndDelete(_id)
+            console.log(result);
+            
+            res.json({message : "contact deleted successfully"})
+        }
+            
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+}
+```
+اومدیم نتیجه اون findByIdAndDelete که میاد حذف میکنه اون contact رو داخل یه const ذخیره کردیم و از اون log گرفتیم میدونیم که log های هر فایلی که داخل فولدرapiهست تو ترمینال اجرا میشن .
+
+هالا اول بریم دیتابیس mongodb رو یه نگا بندازیم که چند تا داکیومنت contact داریم 
+ <div align="center">
+  <img  src="./img/delete-contact-api-1.PNG"> 
+</div>
+
 ---
+میبینیم که سه تا داکیومنت contact داریم تو کالکشن contacts تو دیتابیس next-db مون مثلا میخواییم اخری که ایدیش 67efafdd37840538c2c167a6 هست اسمش هم sara هست رو حذف کنیم وارد postman میشیم و یه درخاست از نوع delete میزنیم به این ادرسمون با این ایدی 
+
+ <div align="center">
+  <img  src="./img/delete-contact-api-2.PNG"> 
+</div>
+ <div align="center">
+  <img  src="./img/delete-contact-api-3.PNG"> 
+</div>
+
+
+مبینیم که این `{message : "contact deleted successfully"}` که این contact با موفقیت حذف شده رو بهمون response میده رو میگیریم هلا اون log که گرفتیم تو ترمینال هم  اون ابجکت با مشخصات این ایدی رو میده بهمون
+ <div align="center">
+  <img  src="./img/delete-contact-api-4.PNG"> 
+</div>
+ <div align="center">
+  <img  src="./img/delete-contact-api-5.PNG"> 
+</div>
+هلا یه نگته مهم اگه ما بیاییم دباره به ادرسمون با همون ایدی که قبلا حذف کردیم دباره با متد deleted درخاست بزنیم چیمیشه ؟ دباره همون  `{message : "contact deleted successfully"}` که این contact با موفقیت حذف شده رو بهمون response میده در حالی که باید کاری کنیم که بگه این ایدی پیدا نشد یا این ایدی وجود نداره . تو ترمینال nul رو میده اون result که تو برنامه نویسی null برابر false هست .
