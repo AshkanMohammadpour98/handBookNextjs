@@ -3886,7 +3886,7 @@ export default async function handler(req , res){
   <img  src="./img/delete-contact-api-1.PNG"> 
 </div>
 
----
+
 میبینیم که سه تا داکیومنت contact داریم تو کالکشن contacts تو دیتابیس next-db مون مثلا میخواییم اخری که ایدیش 67efafdd37840538c2c167a6 هست اسمش هم sara هست رو حذف کنیم وارد postman میشیم و یه درخاست از نوع delete میزنیم به این ادرسمون با این ایدی 
 
  <div align="center">
@@ -3904,4 +3904,58 @@ export default async function handler(req , res){
  <div align="center">
   <img  src="./img/delete-contact-api-5.PNG"> 
 </div>
-هلا یه نگته مهم اگه ما بیاییم دباره به ادرسمون با همون ایدی که قبلا حذف کردیم دباره با متد deleted درخاست بزنیم چیمیشه ؟ دباره همون  `{message : "contact deleted successfully"}` که این contact با موفقیت حذف شده رو بهمون response میده در حالی که باید کاری کنیم که بگه این ایدی پیدا نشد یا این ایدی وجود نداره . تو ترمینال nul رو میده اون result که تو برنامه نویسی null برابر false هست .
+هلا یه نگته مهم اگه ما بیاییم دباره به ادرسمون با همون ایدی که قبلا حذف کردیم دباره با متد deleted درخاست بزنیم چیمیشه ؟ دباره همون  `{message : "contact deleted successfully"}` که این contact با موفقیت حذف شده رو بهمون response میده در حالی که باید کاری کنیم که بگه این ایدی پیدا نشد یا این ایدی وجود نداره . تو ترمینال nul رو میده اون result که تو برنامه نویسی null برابر false هست . به یه شرط میتونیم این مشکل رو حل کنیم و از این result استفاده کنیم اگه اگه وجود داشت بیاد این پیغام رو بده و اگه برابر .... این بده 
+
+```js
+//	pages>api>contacts>[_id].js
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    // mongoose.connect('mongodb://localhost:27017/next-db')
+    // .then(()=>{
+    //     if(mongoose.connections[0].readyState){
+    //         return
+    //         console.log('get contacts to database successfully');
+    //         
+    //     }
+    // })
+    // .catch((error)=>{console.log(error);
+    // })
+    await connectDB()
+    const {_id} = req.query
+
+    
+    if(isValidObjectId(_id)){
+            if(req.method == 'GET'){
+            const contact = await Contact.findById(_id)
+            if(contact){
+
+                res.json(contact)
+            }else{
+                res.json({message : 'objectId not found'})
+            }
+        }else if(req.method == 'DELETE'){
+            const result = await Contact.findByIdAndDelete(_id)
+            if(result){
+                
+                res.json({message : "contact deleted successfully"})
+            }else{
+                res.json({message : "contact not found"})
+            }
+            
+        }
+            
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+}
+```
+اگه این reult مثلا الان چیزی توش هست یه ابجکت توش هست خالی نیست برابر true هست و اگه null بود برابر faluse هست . الان اگه یه درخاست بزنیم به ادرس و همون ایدی که جذف شده پیغام مناسب میده میگه `{message : "contaact not found"}`
+
+ <div align="center">
+  <img  src="./img/delete-contact-api-6.PNG"> 
+</div>
+
+---
