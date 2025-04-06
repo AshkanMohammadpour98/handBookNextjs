@@ -65,6 +65,7 @@
  - قسمت دهم [نصب-postman-و-کاربرد-postman-چیه؟](نصب-postman-و-کاربرد-postman-چیه؟)
  - قسمت یازدهم [توسعه-قابلیت-اضافه-کردن-مخاطب-جدید](توسعه-قابلیت-اضافه-کردن-مخاطب-جدید)
  - قسمت دوازدهم [توسعه-قابلیت-حذف-کردن-مخاطب](توسعه-قابلیت-حذف-کردن-مخاطب)
+ - قسمت سیزدهم [توسعه-قابلیت-ویرایش-مخاطب](توسعه-قابلیت-ویرایش-مخاطب)
 
 
 
@@ -3959,3 +3960,91 @@ export default async function handler(req , res){
 </div>
 
 ---
+
+> # توسعه قابلیت ویرایش مخاطب
+
+ما میتونیم داکیومنت های داخل کالکشن ها مون که تو دیتابیس هستن رو تغیر یا ابدیت کنیم مثلا ما یه مخاطب داریم که name , lastName , gender , age , phone داره میتونیم مثلا age رو مثلا که 30 هست تغیر بدیم مثلا فرض کنین ما داخل سایت مون چندین مخاطب داریم روی هرکدوم که کلیک کنیم میتونیم ویرایش کنیم اسم و جنیست و شماره و .... شو و یه دکمه edit contact رو داره که اگه روش بزنیم یه درخاست با متد PUT ارسال میشه به سمت سرور که تو request body بدنه درخاست این اطلاعات ابدیت وجود داره  بصورت json اینا تو دیتابیس ذخیره میشن و یه response متناسب با این درخاست به کلاینت داده میشه مثلا کاربر با موفقیت ابدیت شد. خیلی شبیه به متد PUST هست اضافه کردن مخاطب مثل اون اطلاعات تو بدنه درخاست ذخیره میشن .
+
+ خب اول یه نگاه به دیتابیس next-db کنیم  و کالکشن contacts 
+
+  <div align="center">
+  <img  src="./img/update-api-1.PNG"> 
+</div>
+
+خب هلا وارد فایل pages>api>contacts>[_id].js میشیم 
+
+```js
+//	pages>api>contacts>[_id].js
+
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose, { isValidObjectId } from "mongoose";
+
+export default async function handler(req , res){
+    // mongoose.connect('mongodb://localhost:27017/next-db')
+    // .then(()=>{
+    //     if(mongoose.connections[0].readyState){
+    //         return
+    //         console.log('get contacts to database successfully');
+    //         
+    //     }
+    // })
+    // .catch((error)=>{console.log(error);
+    // })
+    await connectDB()
+    const {_id} = req.query
+
+    
+    if(isValidObjectId(_id)){
+            if(req.method == 'GET'){
+            const contact = await Contact.findById(_id)
+            if(contact){
+
+                res.json(contact)
+            }else{
+                res.json({message : 'objectId not found'})
+            }
+        }else if(req.method == 'DELETE'){
+            const result = await Contact.findByIdAndDelete(_id)
+            if(result){
+                
+                res.json({message : "contact deleted successfully"})
+            }else{
+                res.json({message : "contact not found"})
+            }
+            
+        }else if(req.method == 'PUT'){
+            await Contact.findByIdAndUpdate(_id , req.body)
+            res.json({massage : "contact update successfully"})
+           
+            
+        }
+            
+        }else{
+            res.json({message : 'objectId not value'})
+        }
+}
+```
+کاری که انجام دادیم اول اومدیم id_ رو اسخراج کردیم از url که ببنیم بعد `/` ایدی کاربر چیه  تو بعد یه شرط داریم که اومدیم اعتبار سنجی کردیم با متد isValidObjectId و اون ایدی رو بهش دادییم به عنوان پارامترورودی که اگر این ایدی رو داشتیم تو این کالکشن این دستورات متد ها مون اجرا بشن و اگه این اید وجود نداشت یه res.json({massage :'objectId not value'})  این ایدی رو نداریم یا معتبر نیست رو برمیگردونه بصور پاسخ  هلا اگه این ایدی رو داشتیم و درخاست بصورت post باشه یه await داریم چون این فانکشن بصورت async هست و داریم از دیتابیس اطلاعات میگیریم  و میفرستیم ممکنه زمان بر باشه و async هست پس await داریم و از مدل مون استفاده کردیم که Contact هست و متد findByIdAndUpdate یعنی پیدا کن بر اساس ایدی و اپدیت کن که دوتا ورودی میگیره که اولی ایدی هست که میخواییم ابدیت کنیم و دومی چیزی که میخواییم جایگزینش کنیم که اینجا این req.body هست که از درخاست ما میاد به سمت سرو تو بدنه درخاست و بعد یع respons متناسب رو داریم  البته میتونیم این رو داخل یه cosnt مثلا به اسم result ذخیره کنیم شاید مورد استفاده باشه مثلا اینطوری 
+```js
+else if(req.method == 'PUT'){
+            const result = await Contact.findByIdAndUpdate(_id , req.body)
+            console.log(result);
+            
+            res.json({massage : "contact update successfully"})
+           
+            
+        }
+```
+این لاگ تو ترمینال vscode وقتی ما یه درخاست PUST به این ادرس بزنیم  و یه سری مثلا اسم یا جنسیت رو تغیر بدیم اون log که میبینیم تو ترمینال مقدار قبلی این داکیومنت هست نه مقدار چدیدی که تغییر دادیم مثلا این اونجا به درد میخوره که مثلا کاربر چیزی رو تغیر نداده ولی رو دکمه ابدیت زده ریسپانسی که باید برگرده اینه که شما چیزی رو تغیر ندادی یا مثلا کاربرد دیگش اینه که مثلا میخوایم تغیرات قبلی رو جایی سیو کنی و....
+  <div align="center">
+  <img  src="./img/update-api-2.PNG"> 
+</div>
+
+  <div align="center">
+  <img  src="./img/update-api-3.PNG"> 
+</div>
+
+  <div align="center">
+  <img  src="./img/update-api-4.PNG"> 
+</div>
