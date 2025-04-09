@@ -66,6 +66,7 @@
  - قسمت یازدهم [توسعه-قابلیت-اضافه-کردن-مخاطب-جدید](توسعه-قابلیت-اضافه-کردن-مخاطب-جدید)
  - قسمت دوازدهم [توسعه-قابلیت-حذف-کردن-مخاطب](توسعه-قابلیت-حذف-کردن-مخاطب)
  - قسمت سیزدهم [توسعه-قابلیت-ویرایش-مخاطب](توسعه-قابلیت-ویرایش-مخاطب)
+ - قسمت چهاردهم [اعتبارسنجی-موقع-اضافه-کردن-مخاطب](اعتبارسنجی-موقع-اضافه-کردن-مخاطب)
 
 
 
@@ -4048,3 +4049,91 @@ else if(req.method == 'PUT'){
   <div align="center">
   <img  src="./img/update-api-4.PNG"> 
 </div>
+
+---
+
+> # اعتبارسنجی-موقع-اضافه-کردن-مخاطب
+
+وقتی کاربر میاد داخل فرم ثبت مخاطب جدیدی رو اضافه کنه باید یه اعتبارسنجی (validation) انجام بشه که دیتاهایی که کاربر توی فرم وارد میکنه شکل بگیره نثلا کاربر شماره تلفن درستی رو وارد کنه مثلا بجای شماره 0914 مثلا بنویسه 08 بجای 09 یا مثلا اسمشو باید بگیم که حداقل سه کاراتر باشه و مثلا بیشتر از 15 کاراکتر نباشه برای نام خانوادگی هم به همین صورت `پس ما میتونیم برای تک تک اطلاعاتی که از کاربر میگیریم اعتبار سنجی انجام بدیم و چک کنیم که کاربر دیتای درسی رو وارد کنه` 
+
+خب چطوری اینکارا رو میکنیم وارد مدل مون میشیم که درست کرده بودیم وارد مسیر روت پروشه فولدر models و فایل contact.js میشیم که مدل contact مون هست .
+
+
+```js
+// models>contact
+
+import { models , model , Schema } from "mongoose";
+
+const contactSchema = new Schema({
+    name : {
+        type : String,
+        minLength : 3,
+        maxLength : 15
+    },
+    family : {
+        type : String,
+        minLength : 3,
+        maxLength : 15
+    },
+    age :{
+        type : Number
+    },
+    phone : {
+        type : String
+    },
+    gender : {
+        type : String
+    }
+
+})
+
+const Contact = models.contact || model('contact' , contactSchema)
+export default Contact
+```
+ما model یا اون طرح و الگو که برای هرکدوم از contact ها هست رو نوشتیم تو schema که گفتیم هر cantact باید شامل این چند تا فیلد name , family , age , phone, gender باشه و Type همه شون رو هم مشخص کردیم که string باشه جز سن هلا برای name , family یه مقدار اعتبار سنجی بیشتر انجام دادیم حداقل و حداکثر کاراکتر ها رو مشخص کردیم `یه نکته مهم ما هر تغیری تو این فایل بدیم تو پوشه models باید مجدد پروژه رو npm run dev مجددن اجرا کنیم دباره` 
+
+هلا وارد فولدر pages>api>contacts<index.js میشیم که ارور اون رو هم هندل کنیم که وقتی مخاطب جدیدی اضافه میشه ممکنه ارور داشته باشه مثلا تو اون فرم اسمشون بجای اینکه بیشتر از سه کاراکتر باشه مثلا دو کاراکتر بنویسه.
+
+
+```js
+// pages>api>contacts>index.js
+
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   // mongoose
+   //    .connect("mongodb://localhost:27017/next-db")
+   //    .then(() => {
+   //       if(mongoose.connections[0].readyState){
+   //          return
+   //          console.log("connect to db successfully")
+   //       }
+   //    })
+   //    .catch((error) => console.log(error))
+   await connectDB()
+
+   if (req.method == "GET") {
+      const contacts = await Contact.find()      
+      res.json(contacts)
+   }
+   else if(req.method == "POST"){
+      
+     try{
+      await Contact.create(req.body)
+      res.status(201).json({message : 'new contact added to db'})
+
+     }catch(error){
+      await Contact.create(req.body)
+      res.status(422).json({message : error.message})
+
+     }
+      
+   }
+}
+```
+
+
+
+ کاری که کردیم اونجا که میگفتیم این مخاطب جدید رو به دیتابیس اضافه کن رو گزاشتیم تو یه try catch نوشتیم و اونو داخل try گزاشتیم که سعی میکنه مخاطب رو اضافه کنه rty ولی اگه نشد هم  وقتی مخاطبی اضافه شد و برای catch هم اگه اروری داشتیم اون اجرا میشه کد 422 یعنی اگه تو گوگل هم سرچ کنیم status 422 code که به معنای دیتای ارسالی از سمت کاربر شامل اطلاعات نادرست است . هلا ارور 500 هم داریم که اگه سرچ کنید یعنی خطای ناشناخته تو سرور اتفاق افتاده  پس اگه اطلاعاتی از سمت کاربر که فرستاده میشه اطلاعات نامعتبری باشه میتونیم از کد 422 استفاده کنیم 
