@@ -4274,3 +4274,54 @@ export default Contact
 
 
 تو قسمت قبل گفتیم که وقتی تو روت localhost:3000/api/contacts هستم میتونیم یه علامت `?` بزاریم وبعد جفت های key=value بزاریم localhost:3000/api/contacts?key=value  با متد req.query میتونیم به این جفت های کلید مقدار دسترسی داشته باشیم یعنی میتونیم این جفت های کلید مقدار از داخل url بکشیم بیرون 
+
+```js
+//	pages>api>contacts>index.js
+
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   // mongoose
+   //    .connect("mongodb://localhost:27017/next-db")
+   //    .then(() => {
+   //       if(mongoose.connections[0].readyState){
+   //          return
+   //          console.log("connect to db successfully")
+   //       }
+   //    })
+   //    .catch((error) => console.log(error))
+   await connectDB()
+
+   if (req.method == "GET") {
+      const contacts = await Contact.find()      
+      res.json(contacts)
+      // console.log(req.query);
+      //{name : "milad" , family: "bahrami"}
+      const {name , family} = req.query
+      console.log(name , family);
+      
+      
+   }
+   else if(req.method == "POST"){
+      
+     try{
+      await Contact.create(req.body)
+      res.status(201).json({message : 'new contact added to db'})
+
+     }catch(error){
+      await Contact.create(req.body)
+      res.status(422).json({message : error.message})
+
+     }
+      
+   }
+}
+```
+اونجا که ما گفتیم اگه درخاست از نوع GET بود داخل اون شرط میتونیم یه لاگ بگیریم از console.log(req.query) بگیریم هلا داخل ادرس مروگر بنویسیم `localhost:3000/api/contacts?name=milad` الان اگه وارد ترمینال شیم چون گفتیم کد های داخل فولدر api تو ترمینال اجرا میشن میبنیم که یه ابجکت داریم که اینطوریه `{name : "milad"}` که هلا ما میتونیم اون رو Object Destructuring کنیم  
+
+`پس وقتی ما از req.query استفاده میکنیم اون جفت های key=value میان تو یه {...} ذخیره میشن ما یه req.body هم داشتیم گفتم که باهم قاتیش نکنیم اون برای گرفتن اون بدنه درخاست بود مثلا یه فرم رو پر کرده کار بر تو درخاستش که به سمت سرور هست اون اطلاعات که پر کرده تو req.body هستن`
+
+
+---
