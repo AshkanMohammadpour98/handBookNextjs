@@ -69,6 +69,7 @@
  - قسمت چهاردهم [اعتبارسنجی-موقع-اضافه-کردن-مخاطب](اعتبارسنجی-موقع-اضافه-کردن-مخاطب)
  - قسمت پانزدهم [قابلیت-سرچ و فیلتر کردن مخاطب ها](قابلیت-سرچ-و-فیلتر-کردن-مخاطب-ها)
  - قسمت شانزدهم [query string چیست؟](query-string-چیست؟)
+ - قسمت هفدهم [متد-req.query](متد-req.query)
 
 
 
@@ -4257,7 +4258,7 @@ export default Contact
 //	localhost:3000/api/contacts?key=value
 //	localhost:3000/api/contacts?gen=male
 //	localhost:3000/api/contacts?gen=female
-
+ 
 //	localhost:3000/api/contacts?key1=male&key2=bahrami
 // این key1 , key2 رو اسمشون رو خودمون میتونیم تغیر بدیم اسم دلخواه بزاریم براش
 //	localhost:3000/api/contacts?gen=male&search=bahrami
@@ -4268,3 +4269,8 @@ export default Contact
 تو قسمت بعد یاد میگیریم چطوری به این query string هایی که داریم تو url دسترسی پیداکنیم به این جفت های کلید و مقدار که تو url قرار میگیرن تو نکست
 
 ---
+
+> # متد req.query
+
+
+تو قسمت قبل گفتیم که وقتی تو روت localhost:3000/api/contacts هستم میتونیم یه علامت `?` بزاریم وبعد جفت های key=value بزاریم localhost:3000/api/contacts?key=value  با متد req.query میتونیم به این جفت های کلید مقدار دسترسی داشته باشیم یعنی میتونیم این جفت های کلید مقدار از داخل url بکشیم بیرون 
