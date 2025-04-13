@@ -4329,4 +4329,165 @@ export default async function handler(req, res) {
 
 > # فیلترکردن مخاطب ها براساس جنسیت
 
-تو قسمت قبل با موضوع query string اشنا شدیم دیدیم که میتونیم بعد از ?localhost:3000/api/contacts میتونیم یه key=value بزاریم localhost:3000/api/contacts?key=value میتونیم جفت های کلید مقدار بزاریم و همچنین تو کد هامون میتونستیم این جفت های کلید مقدار رو دریافت کنیم بهش دسترسی داشته باشیم از url بگیریم از اون request بگیریم با req.query و همچنین اگه میخواستیم بیش از یک key value داشته باشیم بیشتر از یک کلید مقدار بخوایم داشته باشیم از `&` بینشون استفاده میکنیم .
+تو قسمت قبل با موضوع query string اشنا شدیم دیدیم که میتونیم بعد از ?localhost:3000/api/contacts میتونیم یه key=value بزاریم localhost:3000/api/contacts?key=value میتونیم جفت های کلید مقدار بزاریم و همچنین تو کد هامون میتونستیم این جفت های کلید مقدار رو دریافت کنیم بهش دسترسی داشته باشیم از url بگیریم از اون request بگیریم با req.query و همچنین اگه میخواستیم بیش از یک key value داشته باشیم بیشتر از یک کلید مقدار بخوایم داشته باشیم از `&` بینشون استفاده میکنیم . و میتونستیم ازابجکت req.query بکشیم بیرون استخراج کنیم
+
+
+هلا میخواییم api رو بیشتر توسعه بدیم کاربر بتونه براساس جنسیت فیلتر انجام بده و بر اساس نام و فامیل هم بتونه فیلتر انجام بده که اونو تو قسمت بعدی بهش میپردازیم هلا میخوایم فیلتر براساس جنسیت رو انجام بدیم مثلا ما اکه 6 تا داکیومنت تو کالکشن contact داشته باشیم و بیاییم تو url مون یه درخاست get بزنیم به ادرس localhost:3000/api/contacts?gen=male بیاد و اون داکیومنت هایی که gender شون جنسیتشون male مرد هست رو بهمون بده یه فیلتر برامون انجام بده 
+
+یه نگاه به دیتابیسمون کنیم کالکشن contacts و داکیومنت های داخلش 
+
+```js
+[
+    {
+        "_id": "67e40a3853f4c4bc6e7e65de",
+        "name": "milad",
+        "family": "bahrami",
+        "age": 28,
+        "gender": "male",
+        "phone": "09302555547"
+    },
+    {
+        "_id": "67e519f64faa0558f389156e",
+        "name": "ali",
+        "family": "bahrami",
+        "age": 19,
+        "gender": "male",
+        "phone": "09015552841"
+    },
+    {
+        "_id": "67f58d6398d41e8158e853a9",
+        "name": "matin",
+        "family": "laytani",
+        "age": 24,
+        "phone": "09302225588",
+        "gender": "mael",
+        "__v": 0
+    },
+    {
+        "_id": "67f82e275408734b25133be8",
+        "name": "adris",
+        "family": "laytani",
+        "age": 30,
+        "phone": "09143424802",
+        "gender": "mael",
+        "__v": 0
+    },
+    {
+        "_id": "67fb952c51d6bd27cba858e0",
+        "name": "sara",
+        "family": "ahmadi",
+        "age": 34,
+        "phone": "09143424800",
+        "gender": "femael",
+        "__v": 0
+    },
+    {
+        "_id": "67fb955d51d6bd27cba858e1",
+        "name": "nika",
+        "family": "shakarami",
+        "age": 34,
+        "phone": "09145555800",
+        "gender": "femael",
+        "__v": 0
+    }
+]
+```
+ما برای فیلتر بر اساس جنیست بجای کلمه gender مینویسیم gen دستخودمونه که چه اسمی براش بنویسیم
+
+```js
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   // mongoose
+   //    .connect("mongodb://localhost:27017/next-db")
+   //    .then(() => {
+   //       if(mongoose.connections[0].readyState){
+   //          return
+   //          console.log("connect to db successfully")
+   //       }
+   //    })
+   //    .catch((error) => console.log(error))
+   await connectDB()
+
+   if (req.method == "GET") {
+      let contacts = null     
+     
+      const {gen} = req.query
+      
+      if(gen){
+         if(gen == 'male'){
+            console.log('gen = male');
+            contacts = await Contact.find({gender : "male"})
+            
+         }else if(gen == 'female'){
+            console.log('gen = female');
+            contacts = await Contact.find({gender : "female"})
+            
+         }else{
+            console.log('gen not male and female');
+            contacts = await Contact.find()
+            
+         }
+         
+      }else{
+	 console.log('gen null');
+         contacts = await Contact.find()
+      }
+      
+      res.json(contacts)
+      
+   }
+   else if(req.method == "POST"){
+      
+     try{
+      await Contact.create(req.body)
+      res.status(201).json({message : 'new contact added to db'})
+
+     }catch(error){
+      await Contact.create(req.body)
+      res.status(422).json({message : error.message})
+
+     }
+      
+   }
+}
+```
+کاری که کردیم اون ()const contacts = await Contact.find رو تبدیل به let contacts = null کردیم let گزاشتیم چون بعدن که میخواییم شرط بزاریم میخوایم متغیر contacts رو تغیر بدیم و برابر null گزاشتیم چون تو شرط ها تغیر میکنه و اگه یه شرایطی رو داشتیم که داخل شرط ها نبود بهش یه مقدار کل داکیومنت ها رو میدیم پس اول بدون مقدار هست و داخل "req.gethod =="GET  چون اون درخاست مثلا loalhost:3000/api/contacts?gen=female یه درخاست از نوع GET هست داخل شرط GET اون رو نوشتیم  بعد اومدیم gen که همون gender هست رو با استفاده از متد req.query از url که تو درخاست هست کشیدیم بیرون  و یه شرط گزاشتیم که اگه gen وجود داشت بیا اینکارو کن که اونم باز خودش شرط داخلشه که داخلش یه جا نوشتیم else که این لاگ هم کنارش هست console.log('gen not male and female') اونجا هست که اگه نه male باشه نه female هم نباشه ممکنه اینطوری به چیز الکی وارد کنه مثلا localhost:3000/api/contacts?gen=asddddd اینطوری باشه که کل داکیومنت ها رو بهش نشون میده یا بنویسه مثلا خلاصه هرجی جز male , female بنویسه کل داکیومنت رو بهش نشون میده ممکنه بنویسه localhost:3000/api/contacts?gen=all باز هم همه داکیومنت هاروبهش نشون میده  بعد اینا یه else هم داریم که مال شرط if(gen) هست داخل اون else هم که لاگ console.log('gen null') کنارشه اونجا چون gen اگه وجود نداشته باشه مقدار این contacts برابر null هست یعنی ما اگه یه درخاست get بزنیم به ادرس localhost:3000/api/contacts یه null میده چون مقداری نداره متغیر contacts پس اونجا هم همه اون داکیومنت هارو بهش میدیم که مقدار داشته باشه  و درنهایت  res.json(contacts)  بهش گفتیم که بصورت ریسپانس یا پاسخ این contacts متغیر رو برگردونه. یه نکته دقت کنیم که log های داخل پوشه و api تو محیط ترمینال اجرامیشه قبلا هم گفتیم 
+
+
+الان اگه یه درخاست بزنیم به ادرس localhost:3000/api/contacts?gen=male چیزی که بهمون میده 
+
+
+```js
+[
+    {
+        "_id": "67e40a3853f4c4bc6e7e65de",
+        "name": "milad",
+        "family": "bahrami",
+        "age": 28,
+        "gender": "male",
+        "phone": "09302555547"
+    },
+    {
+        "_id": "67e519f64faa0558f389156e",
+        "name": "ali",
+        "family": "bahrami",
+        "age": 19,
+        "gender": "male",
+        "phone": "09015552841"
+    },
+{
+        "_id": "67f58d6398d41e8158e853a9",
+        "name": "matin",
+        "family": "laytani",
+        "age": 24,
+        "phone": "09302225588",
+        "gender": "mael",
+        "__v": 0
+    }
+]
+```
+
+----
