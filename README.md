@@ -4627,5 +4627,88 @@ db.contacts.find({ $or : [ {name : "ahmadi"} , {family : "ahmadi"} ] })
 	}
 ]
 ```
+هلا میخواییم قابلیت سرچ کردن مخاطب هارو براساس name یا family تو nextjs بنویسیم 
 
+```js
+//	pages>api>contacts>index.js
 
+import Contact from "@/models/contact";
+import connectDB from "@/utils/connectDB";
+import mongoose from "mongoose";
+
+export default async function handler(req, res) {
+   // mongoose
+   //    .connect("mongodb://localhost:27017/next-db")
+   //    .then(() => {
+   //       if(mongoose.connections[0].readyState){
+   //          return
+   //          console.log("connect to db successfully")
+   //       }
+   //    })
+   //    .catch((error) => console.log(error))
+   await connectDB()
+
+   if (req.method == "GET") {
+      let contacts = null     
+     
+      const {gen , search} = req.query
+      
+      if(gen){
+         if(gen == 'male'){
+            contacts = await Contact.find({gender : "male"})
+
+         }else if(gen == 'female'){
+            contacts = await Contact.find({gender : "female"})
+            
+         }else{
+            contacts = await Contact.find()
+            
+         }
+         
+      } else if(search){
+         contacts = await Contact.find({$or : [{name : search},{family : search}]})
+
+      }else{
+         contacts = await Contact.find()
+      }
+      
+      res.json(contacts)
+      
+   }
+   else if(req.method == "POST"){
+      
+     try{
+      await Contact.create(req.body)
+      res.status(201).json({message : 'new contact added to db'})
+
+     }catch(error){
+      await Contact.create(req.body)
+      res.status(422).json({message : error.message})
+
+     }
+      
+   }
+}
+```
+کلید برای سرچ  روی نام و نام خانوادگی رو search گزاشتیم که داخل اون ذخیره بشه اسم مخاطبی که دنبالشیم مثلا میزنیم localhost:3000/api/contacts?search=milad :
+```js
+[
+	{
+	_id: "67e40a3853f4c4bc6e7e65de",
+	name: "milad",
+	family: "bahrami",
+	age: 28,
+	gender: "male",
+	phone: "09302555547"
+	},
+	{
+	_id: "67fe1ad8c334407724dd7406",
+	name: "milad",
+	family: "ahmadi",
+	age: 27,
+	gender: "male",
+	phone: "09302107547"
+	}
+]
+```
+تو همه داکیومنت هایی که تو دیتابیس تو کالشن contacts هستن رو name , family شون رو میگیرده که هم گه تو name  و هم اگه تو family این اسم milad وجود داشته باشه رو برمیگردونه برامون.
