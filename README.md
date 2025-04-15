@@ -71,6 +71,7 @@
  - قسمت شانزدهم [query string چیست؟](query-string-چیست؟)
  - قسمت هفدهم [متد-req.query](متد-req.query)
  - قسمت هجدهم [فیلترکردن-مخاطب-ها-براساس-جنسیت](فیلترکردن-مخاطب-ها-براساس-جنسیت)
+ - قسمت نوزدهم [پیاده-سازی-قابلیت-سرچ](پیاده-سازی-قابلیت-سرچ)
 
 
 
@@ -4484,10 +4485,147 @@ export default async function handler(req, res) {
         "family": "laytani",
         "age": 24,
         "phone": "09302225588",
-        "gender": "mael",
+        "gender": "male",
         "__v": 0
     }
 ]
 ```
 
 ----
+
+> # پیاده سازی قابلیت سرچ
+
+فرض کنیم که ما 7 تا داکیومنت داریم و این دیتابیس ما هست 
+
+```js
+[
+    {
+        "_id": "67e40a3853f4c4bc6e7e65de",
+        "name": "milad",
+        "family": "bahrami",
+        "age": 28,
+        "gender": "male",
+        "phone": "09302555547"
+    },
+    {
+        "_id": "67e519f64faa0558f389156e",
+        "name": "ali",
+        "family": "bahrami",
+        "age": 19,
+        "gender": "male",
+        "phone": "09015552841"
+    },
+    {
+        "_id": "67f58d6398d41e8158e853a9",
+        "name": "matin",
+        "family": "laytani",
+        "age": 24,
+        "phone": "09302225588",
+        "gender": "male",
+        "__v": 0
+    },
+    {
+        "_id": "67f82e275408734b25133be8",
+        "name": "adris",
+        "family": "laytani",
+        "age": 30,
+        "phone": "09143424802",
+        "gender": "mael",
+        "__v": 0
+    },
+    {
+        "_id": "67fb952c51d6bd27cba858e0",
+        "name": "sara",
+        "family": "ahmadi",
+        "age": 34,
+        "phone": "09143424800",
+        "gender": "femael",
+        "__v": 0
+    },
+    {
+        "_id": "67fb955d51d6bd27cba858e1",
+        "name": "nika",
+        "family": "shakarami",
+        "age": 34,
+        "phone": "09145555800",
+        "gender": "femael",
+        "__v": 0
+    },
+    {
+        "_id": "67fe1ad8c334407724dd7406",
+        "name": "milad",
+        "family": "ahmadi",
+        "age": 27,
+        "gender": "male",
+        "phone": "09302107547"
+    }
+]
+```
+کاری که میخوایم انجام بدیم جستجو براساس name , family قبلا که ما محیط و کامند های mongodb اشنا شدیم مثلا اگه میخواییم سرچ انجام بدیم براساس name  اینطوری مینوشتیم 
+```js
+db.contacts.find({name : 'sara'})
+```
+```js
+{
+  _id: ObjectId('67fb952c51d6bd27cba858e0'),
+  name: 'sara',
+  family: 'ahmadi',
+  age: 34,
+  phone: '09143424800',
+  gender: 'femael',
+}
+```
+یا مثلا سرچ براساس family :
+```js
+db.contacts.find({family : "bahrami"})
+```
+```js
+[
+	{
+	  _id: ObjectId('67e519f64faa0558f389156e'),
+	  name: 'ali',
+	  family: 'bahrami',
+	  age: 19,
+	  gender: 'male',
+	  phone: '09015552841'
+	},
+	{
+	  _id: ObjectId('67e40a3853f4c4bc6e7e65de'),
+	  name: 'milad',
+	  family: 'bahrami',
+	  age: 28,
+	  gender: 'male',
+	  phone: '09302555547'
+	}
+]
+
+```
+
+هلا مثلا میخوایم کاربرایی رو پیدا کنیم یا مخاطب هایی رو پیدا کنیم که مثلا اسم milad یا تو name شون باشه یا تو family `میخوایم سرچ رو هم بر اساس name و هم برای family انجام بدیم ببینیم تو کدوم این کلمه وجود داره` قبلا اینو از کامند های mongodb compass تو میحیط mongosell هم یاد گرفتیم هلا باز دباره تو این محیط mongoodb compass تو mongosh میزنیم که یهتر یاد اوری بشه بعد میریم تو nextjs همین دستورا رو میزنیم 
+
+```js
+db.contacts.find({ $or : [ {name : "ahmadi"} , {family : "ahmadi"} ] })
+```
+```js
+[
+	{
+	  _id: ObjectId('67fe1ad8c334407724dd7406'),
+	  name: 'milad',
+	  family: 'ahmadi',
+	  age: 27,
+	  gender: 'male',
+	  phone: '09302107547'
+	},
+	{
+	  _id: ObjectId('67fb952c51d6bd27cba858e0'),
+	  name: 'sara',
+	  family: 'ahmadi',
+	  age: 34,
+	  phone: '09143424800',
+	  gender: 'femael',
+	  __v: 0
+	}
+]
+```
+
+
